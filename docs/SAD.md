@@ -96,7 +96,7 @@ The sequence diagram describes how a Student submits a leave request and how an 
 6. The system records the Admin's decision in the audit log and displays the updated status.
 7. If the request has already been decided, the system rejects the repeated decision.
 
-This flow supports REQ-19 and REQ-20. The sequence diagram should be kept synchronized with the implemented leave approval workflow.
+This flow supports REQ-19 and REQ-20.
 
 ## 4.3 API Design
 
