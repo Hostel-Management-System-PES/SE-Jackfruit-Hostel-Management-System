@@ -1,0 +1,22 @@
+@startuml
+left to right direction
+actor Admin
+rectangle "Hostel Management System" {
+  usecase "UC-01 Login" as UC01
+  usecase "UC-03 Verify Student Registration" as UC03
+  usecase "UC-04 Manage Rooms & Blocks" as UC04
+  usecase "UC-05 Allocate Room" as UC05
+  usecase "UC-06 Deallocate Room" as UC06
+  usecase "UC-08 Record Fee Payment" as UC08
+  usecase "UC-10 Manage Complaint Status" as UC10
+  usecase "UC-12 Approve / Reject Leave" as UC12
+}
+Admin --> UC01
+Admin --> UC03
+Admin --> UC04
+Admin --> UC05
+Admin --> UC06
+Admin --> UC08
+Admin --> UC10
+Admin --> UC12
+@enduml
