@@ -6,23 +6,45 @@
 <!-- SAD-P1-2 -->
 <!-- SAD-P2-1 -->
 <!-- SAD-P3-2 -->
+
 ### 3.8 Requirements Traceability
 
-The following table maps the hostel management system requirements to the components responsible for implementing them. The mappings must remain consistent with the final SRS and the component definitions in this document.
+The following matrix maps the system requirements to their responsible architecture components and design sections. Requirement identifiers and descriptions follow Appendix C of the SRS. Code references and system test identifiers remain to be finalized when implementation and system testing are available.
 
-| Requirement | Description | Responsible component | Design reference |
+| Req ID | Brief Description | Architecture Ref | Design Ref |
 |---|---|---|---|
-| REQ-17 | Student submits a complaint linked to their allocated room | Complaints & Leave Module | Section 4.3.4 |
-| REQ-18 | Admin updates complaint status | Complaints & Leave Module | Section 4.3.4 |
-| REQ-19 | Student submits a leave request with a valid date range and reason | Complaints & Leave Module | Sections 4.2 and 4.3.4 |
-| REQ-20 | Admin approves or rejects a pending leave request | Complaints & Leave Module | Sections 4.2 and 4.3.4 |
-| SEC-5 | Protect form submissions against cross-site request forgery (CSRF) | Security Middleware | Section 3.9 |
-| SEC-6 | Maintain audit records for specified security-sensitive actions | Audit Logging Component | Sections 3.9 and 4.4 |
-| NFR-1 | Meet the specified response-time target | Application and Database Layer | Section 4.4 |
-| NFR-2 | Allow complaint submission within the specified screen limit | User Interface | Section 4.5 |
-| NFR-3 | Preserve data consistency when operations fail | Service Layer and Database | Section 4.4 |
-| NFR-4 | Maintain modular design and the required unit-test coverage | Django Application Modules | Sections 3.4 and 4.1 |
-| NFR-5 | Support the specified Chrome and Firefox versions | Presentation Layer | Section 4.5 |
+| REQ-1 | Student registration | Accounts Module | Section 4.3.1 |
+| REQ-2 | Student login | Accounts Module | Section 4.3.1 |
+| REQ-3 | Student profile management | Accounts Module | Section 4.3.1 |
+| REQ-4 | Admin verifies student registration | Accounts Module | Section 4.3.1 |
+| REQ-5 | Manage hostel blocks | Room Allocation Module | Section 4.3.2 |
+| REQ-6 | Manage rooms | Room Allocation Module | Section 4.3.2 |
+| REQ-7 | Allocate room | Room Allocation Module | Section 4.3.2 |
+| REQ-8 | Deallocate room | Room Allocation Module | Section 4.3.2 |
+| REQ-9 | View fee details | Fees Module | Section 4.3.3 |
+| REQ-10 | Record fee payment | Fees Module | Section 4.3.3 |
+| REQ-11 | View dashboard | Presentation Layer | Sections 4.1 and 4.5 |
+| REQ-12 | View room availability | Room Allocation Module | Section 4.3.2 |
+| REQ-13 | Manage hostel information | Admin and Hostel Management Components | Sections 3.4 and 4.3 |
+| REQ-14 | Manage student records | Accounts Module | Section 4.3.1 |
+| REQ-15 | View payment history | Fees Module | Section 4.3.3 |
+| REQ-16 | View reports | Reporting and Admin Components | Sections 3.4 and 4.3 |
+| REQ-17 | Student files a complaint linked to allocated room | Complaints and Leave Module | Section 4.3.4 |
+| REQ-18 | Admin updates complaint status | Complaints and Leave Module | Section 4.3.4 |
+| REQ-19 | Student submits leave request with valid dates and reason | Complaints and Leave Module | Sections 4.2.4 and 4.3.4 |
+| REQ-20 | Admin approves or rejects pending leave request | Complaints and Leave Module | Sections 4.2.4 and 4.3.4 |
+| REQ-21 | User login | Accounts Module | Section 4.3.1 |
+| SEC-1 | Authentication and access control | Accounts and Security Components | Sections 3.4 and 3.9 |
+| SEC-2 | Role-based authorization | Accounts and Security Components | Sections 3.4 and 3.9 |
+| SEC-3 | Input validation | Application and Service Layers | Section 4.4 |
+| SEC-4 | Session invalidation after logout or expiry | Accounts and Security Components | Sections 3.9 and 4.4 |
+| SEC-5 | CSRF protection for state-changing submissions | Security Middleware | Sections 3.9 and 4.3 |
+| SEC-6 | Audit logging of privileged actions and failed logins | Audit Logging Component | Sections 3.9 and 4.4 |
+| NFR-1 | 95% of standard requests within 2 seconds with up to 10 concurrent users | Application and Database Layers | Section 4.4 |
+| NFR-2 | Complaint filing in no more than 4 screens | Presentation Layer | Section 4.5 |
+| NFR-3 | Reliability and transactional updates | Service and Database Layers | Section 4.4 |
+| NFR-4 | Modular Django apps and at least 70% unit-test line coverage per module | Django Application Modules | Sections 3.4 and 4.1 |
+| NFR-5 | Compatibility with latest Chrome and Firefox versions | Presentation Layer | Section 4.5 |
 
 <!-- SAD-P1-3 -->
 
