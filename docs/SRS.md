@@ -1,4 +1,3 @@
-
 # Jackfruit Phase-1
 
 ## Software Requirements Specification
@@ -7,12 +6,12 @@
 
 ### Hostel Management System
 
-**Version 1.0**
-**Prepared by:** <Member 1 Tejasvi K S – PES1UG24CS499> / <Member 2 Prathiksha B P – PES1UG24CS925> / <Member 3 Vilohith – PES1UG24CS535> / <Member 4 Varsha – SRN>
-**Group Number:** <G-03>  |  **Project ID:** <HMS-2026-XX>
+**Version 1.2**
+**Prepared by:** Member 1 Tejasvi K S – PES1UG24CS499 / Member 2 Prathiksha B P – PES1UG24CS925 / Member 3 Vilohith – PES1UG24CS535 / Member 4 Varsha – PES1UG24CS516
+**Group Number:** G-03  |  **Project ID:** HMS-2026
 **Course:** UE24CS341A – Software Engineering, V Semester
 **Organization:** PES University, Bangalore — Dept. of CSE
-**Date Created:** <16/9/26>
+**Date Created:** 16/9/26
 
 ---
 
@@ -35,10 +34,14 @@
 * Appendix C: Requirement Traceability Matrix
 
 ---
+## Revision history
 
 | Name        | Date    | Reason For Changes             | Version |
 | ----------- | ------- | ------------------------------ | ------- |
 | Tejasvi K S | 16/9/26 | Initial SRS scope and document | 0.1     |
+| Vilohith, Varsha, Prathiksha | 3/10/26 | Updated their respective sections in SRS | 1.0 |
+| Vilohith, Varsha, Prathiksha | 5/10/26 | Made required changes to SRS | 1.1 |
+| Tejasvi K S | 11/10/26 | Fixed minor wordings and table structure | 1.2 | 
 
 ---
 
@@ -234,7 +237,7 @@ The use case diagram below shows the two actors, Student and Admin, and the twel
 
 ## 4.2 ER Diagram
 
-The ER diagram below shows the core entities: Student, Room, Block, Fee, PaymentRecord, Complaint, and LeaveRequest. A Block contains many Rooms. A Room may be allocated to many Students, up to its capacity (REQ-7), and a Student has at most one allocated Room. Each Student has at most one Fee record, which may be set per student or per room type (REQ-11), and many PaymentRecords (REQ-12). The outstanding balance is calculated as the fee amount minus the sum of payment amounts (REQ-13) and is not stored. A Student files Complaints, each tied to a Room (REQ-17), and submits LeaveRequests (REQ-19). Admin users are stored in the same user table as Students, distinguished by the `role` attribute, and are therefore not a separate entity.
+The ER diagram below shows the core entities: Student, Room, Block, Fee, PaymentRecord, Complaint, and LeaveRequest. A Block contains many Rooms. A Room may be allocated to many Students, up to its capacity (REQ-7), and a Student has at most one allocated Room. Each Student has at most one Fee record, which may be set per student (REQ-11), and many PaymentRecords (REQ-12). The outstanding balance is calculated as the fee amount minus the sum of payment amounts (REQ-13) and is not stored. A Student files Complaints, each tied to a Room (REQ-17), and submits LeaveRequests (REQ-19). Admin users are stored in the same user table as Students, distinguished by the `role` attribute, and are therefore not a separate entity.
 
 ![ER Diagram](diagrams/er_diagram.png)
 
@@ -258,13 +261,13 @@ Student registration (with admin verification), login for both roles, role-based
 ### Stimulus/Response Sequences
 
 * *"Student submits registration form → account created in 'Pending' state → Admin verifies → account activated → student can log in."*
-* Cover invalid input: *"User submits invalid/duplicate email → validation error shown → form redisplayed."*
+* Invalid input: *"User submits invalid/duplicate email → validation error shown → form redisplayed."*
 
 ### Functional Requirements
 
 | ID    | Requirement                                                                                   | Priority | Verification       |
 | ----- | --------------------------------------------------------------------------------------------- | -------- | ------------------ |
-| REQ-1 | The system shall allow a student to register using a unique email/SRN.                        | High     | Functional test    |
+| REQ-1 | The system shall allow a student to register using a unique email and SRN                     | High     | Functional test    |
 | REQ-2 | The system shall keep newly registered accounts in a "Pending" state until admin-verified.    | High     | Functional test    |
 | REQ-3 | The system shall allow an admin to approve or reject a pending registration.                  | High     | Functional test    |
 | REQ-4 | The system shall enforce role-based access so students cannot access admin-only views.        | High     | Authorization test |
@@ -308,13 +311,13 @@ Fee structure setup and payment record tracking, expressed purely as amounts (no
 
 ### Stimulus/Response Sequences
 
-* *"Admin sets a fee amount for a student/room type → student sees the amount due → admin records a payment entry → system recalculates and displays the outstanding balance."*
+* *"Admin sets a fee amount for a student → student sees the amount due → admin records a payment entry → system recalculates and displays the outstanding balance."*
 
 ### Functional Requirements
 
 | ID     | Requirement                                                                                          | Priority | Verification    |
 | ------ | ---------------------------------------------------------------------------------------------------- | -------- | --------------- |
-| REQ-11 | The system shall allow an admin to define a fee amount for a student or room type.                   | High     | Functional test |
+| REQ-11 | The system shall allow an admin to define a fee amount for a student.                                | High     | Functional test |
 | REQ-12 | The system shall allow an admin to record a fee payment entry (amount, date) against a student.      | High     | Functional test |
 | REQ-13 | The system shall calculate the outstanding fee amount as fee due minus total recorded payments.      | High     | Unit test       |
 | REQ-14 | The system shall prevent a recorded payment amount from exceeding the outstanding balance.           | High     | Negative test   |
@@ -360,20 +363,20 @@ Student submits a leave/outing request with the required date range and reason �
 
 ## 6.1 Performance Requirements
 
-* The performance requirements will be finalized during the design phase.
+* **NFR-1:** The system shall respond to standard page requests (dashboard, room list, fee view) within 2 seconds under normal single-user load, verified by manual timing during testing.
 
 ## 6.2 Safety Requirements
 
-* The safety requirements will be finalized during the design phase.
+* Not applicable — the system does not control any safety-critical hardware or process, and no physical harm can result from a failure of the system.
 
 ## 6.3 Security Requirements
 
-| ID    | Security Requirement                                                              | Validation Approach     |
-| ----- | --------------------------------------------------------------------------------- | ----------------------- |
-| SEC-1 | Passwords shall not be stored in plaintext.                                       | Code/config review      |
-| SEC-2 | Role-based access shall prevent students from accessing admin-only endpoints.     | Authorization tests     |
-| SEC-3 | The system shall validate and sanitize all user-supplied input before processing. | Negative/security tests |
-| SEC-4 | Authenticated APIs shall reject expired/invalid session tokens.                   | Security test           |
+| ID    | Security Requirement                                                                                                                 | Validation Approach     |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------- |
+| SEC-1 | Passwords shall not be stored in plaintext.                                                                                          | Code/config review      |
+| SEC-2 | Role-based access shall prevent students from accessing admin-only endpoints.                                                        | Authorization tests     |
+| SEC-3 | The system shall validate and sanitize all user-supplied input before processing.                                                    | Negative/security tests |
+| SEC-4 | The system shall invalidate a user's session after logout or expiry, and reject any request made with an invalid or expired session. | Security test           |
 
 ## 6.4 Software Quality Attributes
 
@@ -437,8 +440,6 @@ Student submits a leave/outing request with the required date range and reason �
 
 **Owner: P4**
 
-Define every term used across the document — check with all teammates for terms that need defining.
-
 | Term          | Definition                                                                                                         |
 | ------------- | ------------------------------------------------------------------------------------------------------------------ |
 | Student       | A registered user who lives in or has applied to live in the hostel.                                               |
@@ -457,30 +458,40 @@ Define every term used across the document — check with all teammates for term
 
 **Owner: P4**
 
-Document exact field layouts for key entities once finalized, e.g.:
-
-| Field            | Length | Data Type   | Description                               | Mandatory |
-| ---------------- | ------ | ----------- | ----------------------------------------- | --------- |
-| student_id       | 36     | UUID/String | Unique student identifier                 | Y         |
-| email            | 100    | String      | Unique login email                        | Y         |
-| room_id          | 36     | UUID/String | Unique room identifier                    | Y         |
-| room_status      | 20     | Enum/String | Vacant / Occupied                         | Y         |
-| fee_amount       | 10,2   | Decimal     | Total fee due for the student             | Y         |
-| payment_amount   | 10,2   | Decimal     | Amount recorded in a single payment entry | Y         |
-| payment_date     | 8      | Date        | Date the payment was recorded             | Y         |
-| complaint_status | 20     | Enum/String | Open / In-progress / Resolved             | Y         |
-| leave_status     | 20     | Enum/String | Pending / Approved / Rejected             | Y         |
-
 ### Student
 
 | Field | Type | Description | Mandatory |
 |---|---|---|---|
 | `student_id` | UUID/String | Unique identifier for the student | Yes |
 | `name` | String | Full name of the student | Yes |
-| `email` | String | Unique login email / SRN | Yes |
+| `email` | String | Unique login email | Yes |
 | `guardian_contact` | String | Parent/guardian contact number | Yes |
-| `registration_status` | Enum/String | `Pending` or `Verified` | Yes |
+| `registration_status` | Enum/String | `Pending` or `Verified` or `Rejected` | Yes |
 | `created_at` | DateTime | Date and time the account was registered | Yes |
+| `srn` | String | Student's unique SRN | Yes |
+| `role` | Enum/String | Student or Admin | Yes |
+| `room_id` |	UUID/String | Room the student is currently allocated to (empty if none) | No |
+
+* srn and guardian_contact are mandatory only when role = Student.
+
+### Block
+
+| Field      | Type        | Description                     | Mandatory |
+| ---------- | ----------- | ------------------------------- | --------- |
+| `block_id` | UUID/String | Unique identifier for the block | Yes       |
+| `name`     | String      | Block/building name             | Yes       |
+
+### Room
+
+| Field         | Type        | Description                                              | Mandatory |
+| ------------- | ----------- | -------------------------------------------------------- | --------- |
+| `room_id`     | UUID/String | Unique identifier for the room                           | Yes       |
+| `block_id`    | UUID/String | Identifier of the block this room belongs to             | Yes       |
+| `room_number` | String      | Room number/label                                        | Yes       |
+| `capacity`    | Integer     | Maximum number of students the room can hold (minimum 1) | Yes       |
+| `room_status` | Enum/String | Current status: `Vacant` or `Occupied`                   | Yes       |
+| `room_type`   | String      | Type of room (e.g. Single, Double)                       | Yes       |   
+
 
 ### Complaint
 
@@ -555,4 +566,3 @@ Document exact field layouts for key entities once finalized, e.g.:
 | UC-12       | Approve / Reject Leave      | Admin         | Admin authenticated, pending leave request exists | Leave request status updated                |
 
 ---
-
