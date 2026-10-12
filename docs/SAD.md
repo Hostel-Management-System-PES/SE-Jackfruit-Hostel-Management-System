@@ -169,13 +169,11 @@ The system provides separate interfaces for Students and Admins. Navigation opti
 
 The following UI mockups provide visual references for the Student and Admin complaints and leave interfaces.
 
-#### Student Complaints and Leave Interface
+**Diagram source:** `docs/diagrams/seq_leave_approval.puml`
 
-![Student complaints and leave interface](diagrams/ui/student_complaints_leave.png)
+**Diagram image:** `docs/diagrams/seq_leave_approval.png`
 
-#### Admin Complaints and Leave Interface
-
-![Admin complaints and leave interface](diagrams/ui/admin_complaints_leave.png)
+![Leave Approval Sequence Diagram](diagrams/seq_leave_approval.png)
 
 The existing UI mockups in `docs/diagrams/ui/` may also include the dashboard, room, and fees screens.
 
