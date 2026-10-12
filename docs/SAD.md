@@ -4,7 +4,7 @@
 - **Version:** 1.0
 - **Authors:** Group G-03 - Tejasvi K S (PES1UG24CS499), Prathiksha B P (PES1UG24CS925), Vilohith (PES1UG24CS535), Varsha (PES1UG24CS516)
 - **Date:** 12-10-2026
-- **Status:** Draft for review
+- **Status:** Ready for review 1
 
 # Revision History
 

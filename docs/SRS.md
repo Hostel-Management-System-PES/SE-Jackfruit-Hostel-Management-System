@@ -1,16 +1,16 @@
 # Jackfruit Phase-1
 
-## Software Requirements Specification
-
-### for
-
-### Hostel Management System
+## Software Requirements Specification for Hostel Management System
 
 **Version 1.3**
 **Prepared by:** Member 1 Tejasvi K S – PES1UG24CS499 / Member 2 Prathiksha B P – PES1UG24CS925 / Member 3 Vilohith – PES1UG24CS535 / Member 4 Varsha – PES1UG24CS516
+
 **Group Number:** G-03  |  **Project ID:** HMS-2026
+
 **Course:** UE24CS341A – Software Engineering, V Semester
+
 **Organization:** PES University, Bangalore — Dept. of CSE
+
 **Date Created:** 16/9/26
 
 ---
