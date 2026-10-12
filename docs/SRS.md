@@ -230,13 +230,17 @@ The system requires no special hardware. Users access it through a standard comp
 
 **Owner: P2**
 
-## 4.1 Use Case Diagram
+## 4.1 Use Case Diagrams
 
-The use case diagram below shows the two actors, Student and Admin, and the twelve use cases (UC-01 to UC-12) listed in the Use Cases table at the end of this document. Both actors use UC-01 (Register / Login), since login applies to both roles; registration applies to Students only.
+The use case diagrams below show the two actors, Student and Admin, and the twelve use cases (UC-01 to UC-12) listed in the Use Cases table at the end of this document. Both actors use UC-01 (Register / Login), since login applies to both roles; registration applies to Students only.
 
-![Use Case Diagram](diagrams/use_case.png)
+![Student Use Case Diagram](diagrams/use_case_student.png)
 
-*Figure 4.1 – Use case diagram of the Hostel Management System.*
+*Figure 4.1a – Use cases of the Student actor.*
+
+![Admin Use Case Diagram](diagrams/use_case_admin.png)
+
+*Figure 4.1b – Use cases of the Admin actor.*
 
 ## 4.2 ER Diagram
 
