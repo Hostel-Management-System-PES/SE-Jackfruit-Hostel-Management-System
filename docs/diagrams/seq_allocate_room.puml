@@ -1,0 +1,29 @@
+@startuml
+actor Admin
+participant "Web UI" as UI
+participant "Room Service" as ROOM
+participant "Accounts Service" as ACC
+database "PostgreSQL" as DB
+participant "Audit Log" as LOG
+Admin -> UI: choose student and room, submit
+UI -> ROOM: allocate(student_id, room_id)
+ROOM -> ACC: is_verified(student_id)
+ACC --> ROOM: registration status
+alt student not Verified or already allocated
+  ROOM --> UI: error 409
+  UI --> Admin: show error message
+else student eligible
+  ROOM -> DB: read room capacity and occupancy
+  DB --> ROOM: capacity, occupied
+  alt room full
+    ROOM --> UI: error 409
+    UI --> Admin: show "room is full"
+  else room available
+    ROOM -> DB: save allocation, update occupancy and status (one transaction)
+    DB --> ROOM: ok
+    ROOM -> LOG: log allocation
+    ROOM --> UI: success
+    UI --> Admin: confirmation
+  end
+end
+@enduml

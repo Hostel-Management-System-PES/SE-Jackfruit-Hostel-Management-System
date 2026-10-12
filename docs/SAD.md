@@ -3,8 +3,37 @@
 <!-- SAD-P1-1 -->
 
 <!-- SAD-P3-1 -->
-<!-- SAD-P1-2 -->
-<!-- SAD-P2-1 -->
+
+## 3.2 Stakeholders & Concerns
+
+| Stakeholder | Concerns |
+|---|---|
+| Student | Easy view of room and fees, privacy of personal data, quick complaint and leave handling |
+| Admin | Control over students, rooms, fees and requests; accurate records; dues report |
+| Developers / maintainers | Modularity, readable code, testability |
+| Faculty / evaluators | Traceability, security, evidence of process |
+
+## 3.3 Component (UML) Diagram
+
+![HMS component diagram](diagrams/component_diagram.png)
+
+*Figure 1: HMS component diagram. Arrows show the direction of dependency.*
+
+## 3.4 Component Descriptions
+
+- **C1 Web UI (Templates):** server-rendered Django pages for Student and Admin; collects input and shows results.
+- **C2 Accounts & Access:** registration with admin verification, login, sessions, roles and student profiles; used by every other component for authentication and authorisation.
+- **C3 Room Allocation:** blocks, rooms with capacity, allocation, deallocation and occupancy status; asks C2 whether a student is Verified before allocating.
+- **C4 Fee & Payment:** fee amount per student, payment records, outstanding balance and the dues report.
+- **C5 Complaints & Leave:** complaint filing and status tracking, leave requests and Admin decisions; links records to the student (C2) and room (C3).
+- **C6 PostgreSQL database:** stores users, rooms, fees, payments, complaints and leave requests with foreign-key constraints.
+- **C7 Logging & Audit:** records failed logins, denied access and key business actions (allocation, payment, decisions) as required by SEC-6.
+
+## 3.5 Chosen Architecture Pattern and Rationale
+
+HMS uses a **layered modular monolith** built on Django's Model-View-Template style. Layers: Presentation (templates) -> Views (request handling and validation) -> Services (business rules) -> Models/ORM -> PostgreSQL. Each functional module is one Django app with its own models, views, services and tests, so team members work in separate folders and modules call each other only through service functions.
+
+**Rejected alternatives:** microservices, because they add deployment and network complexity and make transactions such as allocation with an occupancy update harder, which is not justified for a four-person team and a single relational database; a flat single-app monolith, because it gives poor separation of concerns and constant merge conflicts.
 <!-- SAD-P3-2 -->
 
 ### 3.8 Requirements Traceability
@@ -72,8 +101,16 @@ These modules interact through Django URL routes, views, service functions, and 
 
 ## 4.2 UML Sequence Diagrams
 
-<!-- SAD-P1-4 -->
-<!-- SAD-P2-2 -->
+### 4.2.1 Login and Role Check
+
+The sequence diagram below illustrates authentication, account verification, session creation, role checking, and audit logging.
+
+![Login and role check sequence](diagrams/seq_login.png)
+
+### 4.2.2 Allocate a room (Room Allocation)
+Shows the Admin allocating a room (REQ-7, REQ-8, REQ-10). The service rejects a student who is not Verified or already has a room, and a room that is full. The allocation and the occupancy change are saved in one database transaction (NFR-3) and the action is written to the audit log (SEC-6).
+
+![Allocate room sequence](diagrams/seq_allocate_room.png)
 <!-- SAD-P3-3 -->
 
 ### 4.2.4 Leave Approval Sequence Diagram
@@ -102,8 +139,45 @@ This flow supports REQ-19 and REQ-20.
 
 Interfaces below are Django URL routes that receive HTML form submissions (GET and POST). Request and response fields describe the form inputs and the page results. There is no separate REST API (SRS 3.3).
 
-<!-- SAD-P1-5 -->
-<!-- SAD-P2-3 -->
+### 4.3.1 Accounts & Access API
+
+**POST /accounts/register/** (REQ-1, REQ-2)
+- Auth: none
+- Request: {name, email, srn, guardian_contact, password}
+- Response: {status, user_id} (account created as Pending)
+- Errors: 400 missing or invalid field, 409 email or SRN already registered
+
+**POST /accounts/login/** (REQ-21)
+- Auth: none
+- Request: {identifier (email or SRN), password}
+- Response: {status, role, redirect}
+- Errors: 401 invalid credentials or account not Verified
+
+**POST /accounts/registrations/{id}/decision/** (REQ-3)
+- Auth: Admin
+- Request: {decision (Verified or Rejected)}
+- Response: {user_id, registration_status}
+- Errors: 400 invalid decision, 403 role not permitted, 404 registration not found
+
+### 4.3.2 Room Allocation API
+
+**GET /rooms/available/**
+- Auth: logged-in user (Student or Admin)
+- Request: query parameters block, room_type
+- Response: list of {room_id, block, room_type, capacity, occupied}
+- Errors: 400 invalid filter, 401 not logged in
+
+**POST /rooms/allocate/** (REQ-7, REQ-8, REQ-10)
+- Auth: Admin
+- Request: {student_id, room_id}
+- Response: {status, room_id, occupied}
+- Errors: 400 invalid input, 403 role not permitted, 404 student or room not found, 409 room full, student not Verified, or student already allocated
+
+**POST /rooms/deallocate/** (REQ-9, REQ-10)
+- Auth: Admin
+- Request: {student_id}
+- Response: {status, room_id, occupied}
+- Errors: 400 invalid input, 403 role not permitted, 404 student not found or has no room
 <!-- SAD-P3-4 -->
 
 ### 4.3.4 Complaints and Leave API Design

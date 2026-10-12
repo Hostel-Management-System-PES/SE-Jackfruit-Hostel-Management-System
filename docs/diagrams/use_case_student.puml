@@ -1,0 +1,16 @@
+@startuml
+left to right direction
+actor Student
+rectangle "Hostel Management System" {
+  usecase "UC-01 Register / Login" as UC01
+  usecase "UC-02 Manage Student Profile" as UC02
+  usecase "UC-07 View Fee Details" as UC07
+  usecase "UC-09 Submit Complaint" as UC09
+  usecase "UC-11 Submit Leave Request" as UC11
+}
+Student --> UC01
+Student --> UC02
+Student --> UC07
+Student --> UC09
+Student --> UC11
+@enduml

@@ -230,13 +230,17 @@ The system requires no special hardware. Users access it through a standard comp
 
 **Owner: P2**
 
-## 4.1 Use Case Diagram
+## 4.1 Use Case Diagrams
 
-The use case diagram below shows the two actors, Student and Admin, and the twelve use cases (UC-01 to UC-12) listed in the Use Cases table at the end of this document. Both actors use UC-01 (Register / Login), since login applies to both roles; registration applies to Students only.
+The use case diagrams below show the two actors, Student and Admin, and the twelve use cases (UC-01 to UC-12) listed in the Use Cases table at the end of this document. Both actors use UC-01 (Register / Login), since login applies to both roles; registration applies to Students only.
 
-![Use Case Diagram](diagrams/use_case.png)
+![Student Use Case Diagram](diagrams/use_case_student.png)
 
-*Figure 4.1 – Use case diagram of the Hostel Management System.*
+*Figure 4.1a – Use cases of the Student actor.*
+
+![Admin Use Case Diagram](diagrams/use_case_admin.png)
+
+*Figure 4.1b – Use cases of the Admin actor.*
 
 ## 4.2 ER Diagram
 
@@ -275,6 +279,7 @@ Student registration (with admin verification), login for both roles, role-based
 | REQ-3 | The system shall allow an admin to approve or reject a pending registration.                  | High     | Functional test    |
 | REQ-4 | The system shall enforce role-based access so students cannot access admin-only views.        | High     | Authorization test |
 | REQ-5 | The system shall allow a student to view and edit their own profile (contact, guardian info). | Medium   | Functional test    |
+| REQ-21 | The system shall allow a Verified user (Student or Admin) to log in with email (or SRN for students) and password, and shall reject invalid credentials and accounts that are not Verified with an error message. | High | Functional test |
 
 ---
 
@@ -477,7 +482,7 @@ Student submits a leave/outing request with the required date range and reason �
 | `role` | Enum/String | Student or Admin | Yes |
 | `room_id` |	UUID/String | Room the student is currently allocated to (empty if none) | No |
 
-* srn and guardian_contact are mandatory only when role = Student.
+`srn` and `guardian_contact` are mandatory only when `role` = Student. For Admin accounts they may be empty.
 
 ### Block
 
