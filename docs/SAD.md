@@ -50,8 +50,6 @@ SRS v1.3 (requirements and traceability matrix), STP v1.0 (test plan and test ca
 
 # 3. Architecture
 
-
-```
 ## 3.1 Goals & Constraints
 
 **Goals**
@@ -67,7 +65,6 @@ SRS v1.3 (requirements and traceability matrix), STP v1.0 (test plan and test ca
 - Four-person team and a fixed academic deadline
 - Open-source tooling: Git/GitHub, Jenkins, Docker, SonarQube, pytest
 - All code, including LLM-assisted code, must be understood and explainable by its author
-```
 
 
 ## 3.2 Stakeholders & Concerns
@@ -101,8 +98,6 @@ HMS uses a **layered modular monolith** built on Django's Model-View-Template st
 
 **Rejected alternatives:** microservices, because they add deployment and network complexity and make transactions such as allocation with an occupancy update harder, which is not justified for a four-person team and a single relational database; a flat single-app monolith, because it gives poor separation of concerns and constant merge conflicts.
 
-
-```
 ## 3.6 Technology Stack & Data Stores
 
 | Area | Technology |
@@ -131,9 +126,7 @@ HMS uses a **layered modular monolith** built on Django's Model-View-Template st
 | Fees, payments and outstanding balance become inconsistent | Compute the balance from fee and payments inside one transaction, unit tests |
 | Sensitive data leaks into logs | Logging policy and code review |
 | Schedule slip | Weekly Scrum review, scope fixed to four modules |
-```
 
-```
 ## 3.8 Traceability to Requirements
 
 | Requirement | Description | Component | Design reference |
@@ -170,7 +163,6 @@ HMS uses a **layered modular monolith** built on Django's Model-View-Template st
 | NFR-3 | Atomic updates | C3, C4, C5 | 3.7, 4.2.2, 4.2.3 |
 | NFR-4 | Modular code and 70% coverage | All components | 3.5, 4.1 |
 | NFR-5 | Chrome and Firefox compatibility | C1 Web UI | 3.6 |
-```
 
 ## 3.9 Security Architecture
 
@@ -194,14 +186,11 @@ HMS uses a **layered modular monolith** built on Django's Model-View-Template st
 
 # 4. Design
 
-
-```
 ## 4.1 Design Overview
 
 HMS is designed as layered modules for separation of concerns and easier maintenance. Each module is a Django app with the same structure: models (data), services (business rules), views (request handling and validation), URLs, templates and tests. Modules call each other only through service functions, for example the Room module asks the Accounts module whether a student is Verified before allocating a room.
 
 **Key classes (see SRS Appendix B for fields):** Student/User (role, registration status, SRN, optional room), Block, Room (block, room type, capacity, status), Fee (student, amount), PaymentRecord (student, amount, date), Complaint (student, room, description, status), LeaveRequest (student, dates, reason, status).
-```
 
 ## 4.2 UML Sequence Diagrams
 
@@ -215,19 +204,16 @@ The sequence diagram below illustrates authentication, account verification, ses
 Shows the Admin allocating a room (REQ-7, REQ-8, REQ-10). The service rejects a student who is not Verified or already has a room, and a room that is full. The allocation and the occupancy change are saved in one database transaction (NFR-3) and the action is written to the audit log (SEC-6).
 
 ![Allocate room sequence](diagrams/seq_allocate_room.png)
-```
+
 ### 4.2.3 Record a payment (Fee & Payment)
 Shows the Admin recording a payment (REQ-12, REQ-13, REQ-14). The service calculates the outstanding balance and rejects an amount that is zero, negative or larger than the outstanding balance. A valid payment is saved in one transaction and written to the audit log.
 
 ![Record payment sequence](diagrams/seq_record_payment.png)
-```
 
-```
 ### 4.2.4 Leave request and Admin approval (Complaints & Leave)
 Shows a student submitting a leave request (REQ-19) and the Admin approving or rejecting it (REQ-20). A decision is accepted only while the request is still Pending, and is written to the audit log.
 
 ![Leave request and approval sequence](diagrams/seq_leave_approval.png)
-```
 
 
 ## 4.3 API Design
@@ -274,7 +260,6 @@ Interfaces below are Django URL routes that receive HTML form submissions (GET a
 - Response: {status, room_id, occupied}
 - Errors: 400 invalid input, 403 role not permitted, 404 student not found or has no room
 
-```
 ### 4.3.3 Fee & Payment API
 
 **POST /payments/fee/** (REQ-11)
@@ -294,8 +279,7 @@ Interfaces below are Django URL routes that receive HTML form submissions (GET a
 - Request: student_id in the path
 - Response: {fee_total, paid, outstanding, payments}
 - Errors: 401 not logged in or session expired, 403 viewing another student's dues, 404 student not found
-```
-```
+
 ### 4.3.4 Complaints & Leave API
 
 **POST /complaints/** (REQ-17)
@@ -321,9 +305,7 @@ Interfaces below are Django URL routes that receive HTML form submissions (GET a
 - Request: {decision (Approved or Rejected)}
 - Response: {leave_id, status}
 - Errors: 400 invalid decision, 403 role not permitted, 404 leave request not found, 409 request already decided
-```
 
-```
 ## 4.4 Error Handling, Logging & Monitoring
 
 **Error handling:** every view validates input on the server and returns a consistent error. Pages show a short, friendly message. Unexpected errors show a generic message to the user and full details only in the server log.
@@ -340,10 +322,7 @@ Interfaces below are Django URL routes that receive HTML form submissions (GET a
 **Logging (SEC-6):** failed logins, permission denials, allocations, payments and decisions are logged with user id and timestamp. Passwords, session tokens and full personal details are never logged.
 
 **Monitoring:** track error rate, failed-login count, response time of key pages, and the CI test and SonarQube results on every build.
-```
 
-
-```
 ## 4.5 UX Design
 
 Role-based dashboards for Student and Admin, simple forms with clear validation messages, consistent navigation and readable font sizes. Filing a complaint takes no more than four screens (NFR-2). Screen prototypes are in SRS section 3.1.
@@ -361,4 +340,4 @@ Role-based dashboards for Student and Admin, simple forms with clear validation 
 **5.1 Glossary:** HMS, RBAC, MVT, ORM, CSRF, STRIDE, UML, SRS, STP, NFR.
 **5.2 References:** IEEE 42010, OWASP Top 10, Django documentation, HMS SRS v1.3, HMS STP v1.0.
 **5.3 Tools:** PlantUML, draw.io, Postman, GitHub, Jenkins, SonarQube.
-```
+
