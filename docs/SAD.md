@@ -84,7 +84,7 @@ The sequence diagram describes how a Student submits a leave request and how an 
 
 **Diagram image:** `docs/diagrams/seq_leave_approval.png`
 
-![Leave Approval Sequence Diagram](https://github.com/TejasviKS/SE-Jackfruit-Hostel-Management-System/raw/docs/sad-p4/docs/diagrams/seq_leave_approval.png)
+![Leave Approval Sequence Diagram](https://raw.githubusercontent.com/TejasviKS/SE-Jackfruit-Hostel-Management-System/docs/sad-p4/docs/diagrams/seq_leave_approval.png)
 
 **Sequence flow:**
 
