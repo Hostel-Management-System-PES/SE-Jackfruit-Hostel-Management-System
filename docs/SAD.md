@@ -1,6 +1,6 @@
-<!-- SAD-P1-1 -->
-
 # 3. Architecture
+
+<!-- SAD-P1-1 -->
 
 <!-- SAD-P3-1 -->
 <!-- SAD-P1-2 -->
@@ -9,7 +9,7 @@
 
 ### 3.8 Requirements Traceability
 
-The following matrix maps the system requirements to their responsible architecture components and design sections. Requirement identifiers and descriptions follow Appendix C of the SRS. Code references and system test identifiers remain to be finalized when implementation and system testing are available.
+The following matrix maps the system requirements to their responsible architecture components and design sections. Requirement identifiers and descriptions follow Appendix C of the SRS. Code references and system test identifiers will be finalized when implementation and system testing are available.
 
 | Req ID | Brief Description | Architecture Ref | Design Ref |
 |---|---|---|---|
@@ -75,17 +75,16 @@ These modules interact through Django URL routes, views, service functions, and 
 <!-- SAD-P1-4 -->
 <!-- SAD-P2-2 -->
 <!-- SAD-P3-3 -->
+
 ### 4.2.4 Leave Approval Sequence Diagram
 
 The sequence diagram describes how a Student submits a leave request and how an Admin approves or rejects it. The system validates the date range before saving the request with Pending status. An Admin can decide only a request that is still Pending. The decision is saved in the database and recorded for accountability.
-#### Student Complaints and Leave Interface
 
-![Student complaints and leave interface](diagrams/ui/student_complaints_leave.png)
+**Diagram source:** `docs/diagrams/seq_leave_approval.puml`
 
-#### Admin Complaints and Leave Interface
+**Diagram image:** `docs/diagrams/seq_leave_approval.png`
 
-![Admin complaints and leave interface](diagrams/ui/admin_complaints_leave.png)
-
+![Leave Approval Sequence Diagram](diagrams/seq_leave_approval.png)
 
 **Sequence flow:**
 
@@ -97,7 +96,7 @@ The sequence diagram describes how a Student submits a leave request and how an 
 6. The system records the Admin's decision in the audit log and displays the updated status.
 7. If the request has already been decided, the system rejects the repeated decision.
 
-This flow supports REQ-19 and REQ-20. The diagram files must be created separately and stored at the paths listed above.
+This flow supports REQ-19 and REQ-20. The sequence diagram should be kept synchronized with the implemented leave approval workflow.
 
 ## 4.3 API Design
 
@@ -106,9 +105,10 @@ Interfaces below are Django URL routes that receive HTML form submissions (GET a
 <!-- SAD-P1-5 -->
 <!-- SAD-P2-3 -->
 <!-- SAD-P3-4 -->
+
 ### 4.3.4 Complaints and Leave API Design
 
-The Complaints and Leave Module uses Django URL routes to handle student submissions and administrative decisions. The routes below describe the expected interfaces; they should be aligned with the implemented Django URL configuration.
+The Complaints and Leave Module uses Django URL routes to handle student submissions and administrative decisions. The routes below describe the expected interfaces and must be aligned with the implemented Django URL configuration.
 
 #### 4.3.4.1 Submit Complaint
 
@@ -167,7 +167,17 @@ The system provides separate interfaces for Students and Admins. Navigation opti
 - **Accessibility and usability:** Pages should use readable text, clear labels, and understandable feedback messages.
 - **Complaint workflow:** A Student should be able to submit a complaint within the maximum four-screen limit specified by NFR-2.
 
-The existing UI mockups in `docs/diagrams/ui/` can be used as visual references for the Student and Admin interfaces. These include the dashboard, room, fees, and complaints and leave screens.
+The following UI mockups provide visual references for the Student and Admin complaints and leave interfaces.
+
+#### Student Complaints and Leave Interface
+
+![Student complaints and leave interface](diagrams/ui/student_complaints_leave.png)
+
+#### Admin Complaints and Leave Interface
+
+![Admin complaints and leave interface](diagrams/ui/admin_complaints_leave.png)
+
+The existing UI mockups in `docs/diagrams/ui/` may also include the dashboard, room, and fees screens.
 
 ### 4.6 Open Issues and Future Enhancements
 
@@ -203,7 +213,7 @@ These enhancements should be prioritized based on user feedback, technical feasi
 
 1. IEEE 42010, *Systems and Software Engineering — Architecture Description*.
 2. OWASP, *OWASP Top 10 Web Application Security Risks*.
-3. Django documentation, https://docs.djangoproject.com/
+3. Django documentation: https://docs.djangoproject.com/
 4. Jackfruit Hostel Management System, Software Requirements Specification.
 5. Jackfruit Hostel Management System, Software Test Plan.
 
