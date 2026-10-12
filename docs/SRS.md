@@ -7,7 +7,7 @@
 ### Hostel Management System
 
 **Version 1.0**
-**Prepared by:** <Member 1 Tejasvi K S – PES1UG24CS499> / <Member 2 Prathiksha – SRN> / <Member 3 Vilohith – PES1UG24CS535> / <Member 4 Varsha – SRN>
+**Prepared by:** <Member 1 Tejasvi K S – PES1UG24CS499> / <Member 2 Prathiksha – SRN> / <Member 3 Vilohith – PES1UG24CS535> / <Member 4 Varsha – PES1UG24CS516>
 **Group Number:** <G-03>  |  **Project ID:** <HMS-2026-XX>
 **Course:** UE24CS341A – Software Engineering, V Semester
 **Organization:** PES University, Bangalore — Dept. of CSE
