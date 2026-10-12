@@ -263,39 +263,38 @@ Student submits a leave/outing request with the required date range and reason �
 
 ## 6.1 Performance Requirements
 
-* **NFR-1:** The system shall respond to standard page requests (dashboard, room list, fee view) within 2 seconds under normal single-user load, verified by manual timing during testing.
+**NFR-1:** The system shall respond to standard page requests (dashboard, room list, fee view) within 2 seconds for 95% of requests with up to 10 concurrent users, measured with a load-testing tool (JMeter or Locust).
 
 ## 6.2 Safety Requirements
 
 * Not applicable — the system does not control any safety-critical hardware or process, and no physical harm can result from a failure of the system.
 
 ## 6.3 Security Requirements
+### 6.3.1 Security Objectives
 
+- **SO-1 — Confidentiality:** Student personal, fee, complaint and leave data shall be visible only to the owning student and Admin.
+- **SO-2 — Integrity:** Room allocation, fee and payment records shall be created or changed only by authorized Admin through validated input.
+- **SO-3 — Accountability:** Privileged actions and failed logins shall be traceable to the user and time.
+  
+### 6.3.2 Security Requirements
 | ID    | Security Requirement                                                                                                                 | Validation Approach     |
 | ----- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------- |
 | SEC-1 | Passwords shall not be stored in plaintext.                                                                                          | Code/config review      |
 | SEC-2 | Role-based access shall prevent students from accessing admin-only endpoints.                                                        | Authorization tests     |
 | SEC-3 | The system shall validate and sanitize all user-supplied input before processing.                                                    | Negative/security tests |
 | SEC-4 | The system shall invalidate a user's session after logout or expiry, and reject any request made with an invalid or expired session. | Security test           |
+| SEC-5 | The system shall protect all state-changing form submissions against cross-site request forgery using per-session tokens. | Security test (a POST without a token is refused) |
+| SEC-6 | The system shall record an audit entry (user, action, time) for failed logins, denied access, room allocation and deallocation, payment recording, and complaint and leave decisions, and shall not log passwords or session tokens. | Log review and system test |
 
 ## 6.4 Software Quality Attributes
 
-### Usability
+| ID | Category | Requirement | Verification |
+|---|---|---|---|
+| NFR-2 | Usability | A student shall be able to file a complaint in no more than 4 screens, starting from the dashboard. | Usability walkthrough |
+| NFR-3 | Reliability | An invalid or failed submission (allocation, payment, complaint, leave) shall not create or change any record, and multi-step updates (allocation with occupancy, payment with balance) shall be saved in a single transaction. | Negative and integration tests |
+| NFR-4 | Maintainability | Each functional module shall be a separate Django app with business rules in service functions, and unit tests shall reach at least 70% line coverage per module. | Code review and coverage report |
+| NFR-5 | Compatibility | The system shall work without functional differences on the latest versions of Chrome and Firefox. | Cross-browser walkthrough |
 
-* The system shall provide clear labels, instructions, and validation messages for student and admin actions.
-* Students shall be able to submit complaints and leave requests without requiring technical knowledge.
-* Complaint and leave request statuses shall be displayed clearly to the respective student.
-
-### Reliability
-
-* Invalid or incomplete complaint and leave request submissions shall be rejected with an appropriate error message.
-* A failed submission shall not create an incomplete or inconsistent record in the database.
-* The system shall preserve the status of complaints and leave requests once they are successfully recorded.
-
-### Maintainability
-
-* The system shall separate business logic, data models, and user-interface components to facilitate maintenance.
-* Important business rules shall be covered by appropriate software tests.
 
 ## 6.5 Business Rules
 
@@ -353,7 +352,10 @@ Define every term used across the document — check with all teammates for term
 | Complaint     | A maintenance issue reported by a student for their allocated room and tracked by the system until it is resolved. |
 | LeaveRequest  | A request submitted by a student to obtain permission for leave or outing for a specified date range.              |
 | RBAC          | Role-Based Access Control — restricting actions based on user role (Student/Admin).                                |
-
+| SRN | Student Registration Number, a unique number assigned to each student by the university. |
+| CSRF | Cross-Site Request Forgery, an attack that makes a logged-in user's browser send an unwanted request; per-session tokens help prevent it. |
+| Audit log | A record of who performed a privileged action, what action was performed, and when. |
+| NFR | Non-Functional Requirement, a measurable quality requirement such as performance, usability, or reliability. |
 ---
 
 ## Appendix B: Field Layouts
@@ -404,12 +406,39 @@ Document exact field layouts for key entities once finalized, e.g.:
 **Owner: P4 — fill in last, after all 4 PRs are merged and Phase 2/3 begin**
 
 | Sl. No | Req ID | Brief Description | Architecture Ref | Design Ref | Code File Ref | Test Case ID | System Test ID |
-| ------ | ------ | ----------------- | ---------------- | ---------- | ------------- | ------------ | -------------- |
-| 1      | REQ-1  |                   |                  |            |               |              |                |
-| 2      | REQ-6  |                   |                  |            |               |              |                |
-| 3      | REQ-11 |                   |                  |            |               |              |                |
-| 4      | REQ-17 |                   |                  |            |               |              |                |
-
+|---:|---|---|---|---|---|---|---|
+| 1 | REQ-1 | Student registration | TBD | TBD | TBD | TBD | TBD |
+| 2 | REQ-2 | Student login | TBD | TBD | TBD | TC-ACC-01 | TBD |
+| 3 | REQ-3 | Student profile management | TBD | TBD | TBD | TBD | TBD |
+| 4 | REQ-4 | Admin verifies student registration | TBD | TBD | TBD | TBD | TBD |
+| 5 | REQ-5 | Manage hostel blocks | TBD | TBD | TBD | TBD | TBD |
+| 6 | REQ-6 | Manage rooms | TBD | TBD | TBD | TBD | TBD |
+| 7 | REQ-7 | Allocate room | TBD | TBD | TBD | TC-ROOM-01 | TBD |
+| 8 | REQ-8 | Deallocate room | TBD | TBD | TBD | TBD | TBD |
+| 9 | REQ-9 | View fee details | TBD | TBD | TBD | TBD | TBD |
+| 10 | REQ-10 | Record fee payment | TBD | TBD | TBD | TC-FEE-01 | TBD |
+| 11 | REQ-11 | View dashboard | TBD | TBD | TBD | TBD | TBD |
+| 12 | REQ-12 | View room availability | TBD | TBD | TBD | TBD | TBD |
+| 13 | REQ-13 | Manage hostel information | TBD | TBD | TBD | TBD | TBD |
+| 14 | REQ-14 | Manage student records | TBD | TBD | TBD | TBD | TBD |
+| 15 | REQ-15 | View payment history | TBD | TBD | TBD | TBD | TBD |
+| 16 | REQ-16 | View reports | TBD | TBD | TBD | TBD | TBD |
+| 17 | REQ-17 | Student files a complaint linked to allocated room | TBD | TBD | TBD | TC-REQ-01 | TBD |
+| 18 | REQ-18 | Admin updates complaint status | TBD | TBD | TBD | TC-REQ-02 | TBD |
+| 19 | REQ-19 | Student submits leave request with valid dates and reason | TBD | TBD | TBD | TC-REQ-03 | TBD |
+| 20 | REQ-20 | Admin approves or rejects pending leave request | TBD | TBD | TBD | TC-REQ-04 | TBD |
+| 21 | REQ-21 | User login | TBD | TBD | TBD | TC-ACC-01, TC-ACC-02, TC-ACC-04 | TBD |
+| 22 | SEC-1 | Authentication and access control | TBD | TBD | TBD | TBD | TBD |
+| 23 | SEC-2 | Role-based authorization | TBD | TBD | TBD | TBD | TBD |
+| 24 | SEC-3 | Input validation | TBD | TBD | TBD | TBD | TBD |
+| 25 | SEC-4 | Session invalidation after logout or expiry | TBD | TBD | TBD | TC-SEC-02 | TBD |
+| 26 | SEC-5 | CSRF protection for state-changing submissions | TBD | TBD | TBD | TBD | TBD |
+| 27 | SEC-6 | Audit logging of privileged actions and failed logins | TBD | TBD | TBD | TBD | TBD |
+| 28 | NFR-1 | Performance: 95% of standard requests within 2 seconds with up to 10 concurrent users | TBD | TBD | TBD | TC-PERF-01 | TBD |
+| 29 | NFR-2 | Complaint filing in no more than 4 screens | TBD | TBD | TBD | TC-USE-01 | TBD |
+| 30 | NFR-3 | Reliability and transactional updates | TBD | TBD | TBD | TBD | TBD |
+| 31 | NFR-4 | Modular Django apps and at least 70% unit-test line coverage per module | TBD | TBD | TBD | TBD | TBD |
+| 32 | NFR-5 | Compatibility with latest Chrome and Firefox versions | TBD | TBD | TBD | TBD | TBD |
 ---
 
 ## Use Cases (reference list for the Analysis Models section)
