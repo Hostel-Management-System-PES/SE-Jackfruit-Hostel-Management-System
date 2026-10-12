@@ -1,0 +1,42 @@
+@startuml
+title Login and Role Check Sequence
+
+actor User
+participant "Web UI" as UI
+participant "Accounts Service" as Auth
+database "PostgreSQL" as DB
+participant "Session Manager" as Session
+participant "Audit Log" as Audit
+participant "Protected Page" as Page
+
+User -> UI: Submit email/SRN and password
+UI -> Auth: Send login credentials
+Auth -> DB: Retrieve user by email or SRN
+DB --> Auth: Return user record
+
+Auth -> Auth: Verify password and account status
+
+alt Valid credentials and Verified account
+    Auth -> Session: Create authenticated session
+    Session --> Auth: Return session
+    Auth -> Audit: Log successful login
+    Auth --> UI: Login successful
+    UI --> User: Redirect to role dashboard
+else Invalid credentials or account not Verified
+    Auth -> Audit: Log failed login
+    Auth --> UI: Return login error
+    UI --> User: Display error message
+end
+
+User -> Page: Request protected page
+Page -> Session: Validate session and role
+Session --> Page: Return authentication and role
+
+alt User has required role
+    Page --> User: Display authorised page
+else Invalid session or insufficient permissions
+    Page -> Audit: Log denied access
+    Page --> User: Deny access
+end
+
+@enduml
