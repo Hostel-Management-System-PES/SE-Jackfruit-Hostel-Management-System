@@ -56,10 +56,14 @@ These modules interact through Django URL routes, views, service functions, and 
 ### 4.2.4 Leave Approval Sequence Diagram
 
 The sequence diagram describes how a Student submits a leave request and how an Admin approves or rejects it. The system validates the date range before saving the request with Pending status. An Admin can decide only a request that is still Pending. The decision is saved in the database and recorded for accountability.
+#### Student Complaints and Leave Interface
 
-**Diagram source:** `docs/diagrams/seq_leave_approval.puml`
+![Student complaints and leave interface](diagrams/ui/student_complaints_leave.png)
 
-**Diagram image:** `docs/diagrams/seq_leave_approval.png`
+#### Admin Complaints and Leave Interface
+
+![Admin complaints and leave interface](diagrams/ui/admin_complaints_leave.png)
+
 
 **Sequence flow:**
 
