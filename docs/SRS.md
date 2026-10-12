@@ -42,16 +42,15 @@
 | Vilohith, Varsha, Prathiksha | 3/10/26 | Updated their respective sections in SRS | 1.0 |
 | Vilohith, Varsha, Prathiksha | 5/10/26 | Made required changes to SRS | 1.1 |
 | Tejasvi K S | 11/10/26 | Fixed minor wordings and table structure | 1.2 | 
+| Tejasvi K S, Prathiksha B P, Vilohith, Varsha | 12/10/26 | Added REQ-21, NFR-2 to NFR-5, security objectives, SEC-5, SEC-6, second use case diagram and traceability matrix | 1.3 |
 
 ---
 
 # 1. Introduction
 
-**Owner: P1 (Student & Access Management)**
-
 ## 1.1 Purpose
 
-The Software Requirements Specification (SRS) defines the functional and nonfunctional requirements for Version 1.0 of the Hostel Management System. The system is a web-based application developed for the Software Engineering course at PES University to manage student information, hostel room allocation, fee payment records, complaints, and leave requests for a single hostel. The system provides separate functionality for Student and Admin users.
+The Software Requirements Specification (SRS) defines the functional and nonfunctional requirements for Version 1.3 of the Hostel Management System. The system is a web-based application developed for the Software Engineering course at PES University to manage student information, hostel room allocation, fee payment records, complaints, and leave requests for a single hostel. The system provides separate functionality for Student and Admin users.
 
 ## 1.2 Intended Audience and Reading Suggestions
 
@@ -72,8 +71,6 @@ The following references were used in preparing this Software Requirements Speci
 ---
 
 # 2. Overall Description
-
-**Owner: P3 (Fee Management)**
 
 ## 2.1 Product Perspective
 
@@ -115,8 +112,6 @@ The system is a web application accessed through any modern browser (Chrome, Fir
 ---
 
 # 3. External Interface Requirements
-
-**Owner: P2 (Room & Allocation Management)**
 
 ## 3.1 User Interfaces
 
@@ -225,8 +220,6 @@ The system requires no special hardware. Users access it through a standard comp
 
 # 4. Analysis Models
 
-**Owner: P2**
-
 ## 4.1 Use Case Diagrams
 
 The use case diagrams below show the two actors, Student and Admin, and the twelve use cases (UC-01 to UC-12) listed in the Use Cases table at the end of this document. Both actors use UC-01 (Register / Login), since login applies to both roles; registration applies to Students only.
@@ -256,8 +249,6 @@ The ER diagram below shows the core entities: Student, Room, Block, Fee, Payment
 
 ## 5.1 Student & Access Management
 
-**Owner: P1**
-
 ### Description and Priority
 
 Student registration (with admin verification), login for both roles, role-based access control, student profile management. **Priority: High** â€” every other feature depends on this.
@@ -281,8 +272,6 @@ Student registration (with admin verification), login for both roles, role-based
 ---
 
 ## 5.2 Room & Allocation Management
-
-**Owner: P2**
 
 ### Description and Priority
 
@@ -308,8 +297,6 @@ Room/block setup, capacity and availability tracking, direct allocation and deal
 
 ## 5.3 Fee Management
 
-**Owner: P3**
-
 ### Description and Priority
 
 Fee structure setup and payment record tracking, expressed purely as amounts (no gateway, no receipts). **Priority: High.**
@@ -332,8 +319,6 @@ Fee structure setup and payment record tracking, expressed purely as amounts (no
 ---
 
 ## 5.4 Complaints & Leave Management
-
-**Owner: P4**
 
 ### Description and Priority
 
@@ -363,8 +348,6 @@ Student submits a leave/outing request with the required date range and reason â
 ---
 
 # 6. Other Nonfunctional Requirements
-
-**Owner: P4**
 
 ## 6.1 Performance Requirements
 
@@ -418,8 +401,6 @@ Student submits a leave/outing request with the required date range and reason â
 
 # 7. Other Requirements
 
-**Owner: P4**
-
 ## 7.1 Database Requirements
 
 * The system shall use PostgreSQL as the database management system.
@@ -442,8 +423,6 @@ Student submits a leave/outing request with the required date range and reason â
 
 ## Appendix A: Glossary
 
-**Owner: P4**
-
 | Term          | Definition                                                                                                         |
 | ------------- | ------------------------------------------------------------------------------------------------------------------ |
 | Student       | A registered user who lives in or has applied to live in the hostel.                                               |
@@ -463,8 +442,6 @@ Student submits a leave/outing request with the required date range and reason â
 
 ## Appendix B: Field Layouts
 
-**Owner: P4**
-
 ### Student
 
 | Field | Type | Description | Mandatory |
@@ -477,7 +454,7 @@ Student submits a leave/outing request with the required date range and reason â
 | `created_at` | DateTime | Date and time the account was registered | Yes |
 | `srn` | String | Student's unique SRN | Yes |
 | `role` | Enum/String | Student or Admin | Yes |
-| `room_id` |	UUID/String | Room the student is currently allocated to (empty if none) | No |
+| `room_id` | UUID/String | Room the student is currently allocated to (empty if none) | No |
 
 `srn` and `guardian_contact` are mandatory only when `role` = Student. For Admin accounts they may be empty.
 
@@ -544,42 +521,40 @@ Student submits a leave/outing request with the required date range and reason â
 
 ## Appendix C: Requirement Traceability Matrix
 
-**Owner: P4 â€” fill in last, after all 4 PRs are merged and Phase 2/3 begin**
-
-| Sl. No | Req ID | Brief Description | Architecture Ref | Design Ref | Code File Ref | Test Case ID | System Test ID |
-|---:|---|---|---|---|---|---|---|
-| 1 | REQ-1 | Student registration | TBD | TBD | TBD | TBD | TBD |
-| 2 | REQ-2 | Student login | TBD | TBD | TBD | TC-ACC-01 | TBD |
-| 3 | REQ-3 | Student profile management | TBD | TBD | TBD | TBD | TBD |
-| 4 | REQ-4 | Admin verifies student registration | TBD | TBD | TBD | TBD | TBD |
-| 5 | REQ-5 | Manage hostel blocks | TBD | TBD | TBD | TBD | TBD |
-| 6 | REQ-6 | Manage rooms | TBD | TBD | TBD | TBD | TBD |
-| 7 | REQ-7 | Allocate room | TBD | TBD | TBD | TC-ROOM-01 | TBD |
-| 8 | REQ-8 | Deallocate room | TBD | TBD | TBD | TBD | TBD |
-| 9 | REQ-9 | View fee details | TBD | TBD | TBD | TBD | TBD |
-| 10 | REQ-10 | Record fee payment | TBD | TBD | TBD | TC-FEE-01 | TBD |
-| 11 | REQ-11 | View dashboard | TBD | TBD | TBD | TBD | TBD |
-| 12 | REQ-12 | View room availability | TBD | TBD | TBD | TBD | TBD |
-| 13 | REQ-13 | Manage hostel information | TBD | TBD | TBD | TBD | TBD |
-| 14 | REQ-14 | Manage student records | TBD | TBD | TBD | TBD | TBD |
-| 15 | REQ-15 | View payment history | TBD | TBD | TBD | TBD | TBD |
-| 16 | REQ-16 | View reports | TBD | TBD | TBD | TBD | TBD |
-| 17 | REQ-17 | Student files a complaint linked to allocated room | TBD | TBD | TBD | TC-REQ-01 | TBD |
-| 18 | REQ-18 | Admin updates complaint status | TBD | TBD | TBD | TC-REQ-02 | TBD |
-| 19 | REQ-19 | Student submits leave request with valid dates and reason | TBD | TBD | TBD | TC-REQ-03 | TBD |
-| 20 | REQ-20 | Admin approves or rejects pending leave request | TBD | TBD | TBD | TC-REQ-04 | TBD |
-| 21 | REQ-21 | User login | TBD | TBD | TBD | TC-ACC-01, TC-ACC-02, TC-ACC-04 | TBD |
-| 22 | SEC-1 | Authentication and access control | TBD | TBD | TBD | TBD | TBD |
-| 23 | SEC-2 | Role-based authorization | TBD | TBD | TBD | TBD | TBD |
-| 24 | SEC-3 | Input validation | TBD | TBD | TBD | TBD | TBD |
-| 25 | SEC-4 | Session invalidation after logout or expiry | TBD | TBD | TBD | TC-SEC-02 | TBD |
-| 26 | SEC-5 | CSRF protection for state-changing submissions | TBD | TBD | TBD | TBD | TBD |
-| 27 | SEC-6 | Audit logging of privileged actions and failed logins | TBD | TBD | TBD | TBD | TBD |
-| 28 | NFR-1 | Performance: 95% of standard requests within 2 seconds with up to 10 concurrent users | TBD | TBD | TBD | TC-PERF-01 | TBD |
-| 29 | NFR-2 | Complaint filing in no more than 4 screens | TBD | TBD | TBD | TC-USE-01 | TBD |
-| 30 | NFR-3 | Reliability and transactional updates | TBD | TBD | TBD | TBD | TBD |
-| 31 | NFR-4 | Modular Django apps and at least 70% unit-test line coverage per module | TBD | TBD | TBD | TBD | TBD |
-| 32 | NFR-5 | Compatibility with latest Chrome and Firefox versions | TBD | TBD | TBD | TBD | TBD |
+| Req ID | Requirement short | Section ref / Design spec | Module | Test case(s) | Status (N/P/A) | Comments |
+|---|---|---|---|---|---|---|
+| REQ-1 | Register with unique email and SRN | 5.1 / SAD 4.3.1 | Accounts | TC-ACC-03 | N | |
+| REQ-2 | New accounts stay Pending | 5.1 / SAD 4.3.1 | Accounts | TC-ACC-04 | N | |
+| REQ-3 | Admin approves or rejects registration | 5.1 / SAD 4.3.1 | Accounts | TC-ACC-04 | N | |
+| REQ-4 | Role-based access | 5.1 / SAD 3.9 | Accounts | TC-SEC-01 | N | |
+| REQ-5 | Student views and edits own profile | 5.1 / SAD 3.4 | Accounts | Planned | N | |
+| REQ-6 | Define blocks and rooms with capacity | 5.2 / SAD 4.3.2 | Rooms | Planned | N | |
+| REQ-7 | Prevent allocation beyond capacity | 5.2 / SAD 4.2.2 | Rooms | TC-ROOM-02 | N | |
+| REQ-8 | Allocate room to a Verified student | 5.2 / SAD 4.2.2, 4.3.2 | Rooms | TC-ROOM-01, TC-ROOM-03 | N | |
+| REQ-9 | Deallocate a student from a room | 5.2 / SAD 4.3.2 | Rooms | TC-ROOM-04 | N | |
+| REQ-10 | Automatic occupancy and status update | 5.2 / SAD 4.2.2 | Rooms | TC-ROOM-01, TC-ROOM-04 | N | |
+| REQ-11 | Admin defines fee amount for a student | 5.3 / SAD 4.3.3 | Fees | TC-FEE-01 | N | |
+| REQ-12 | Admin records a payment | 5.3 / SAD 4.2.3, 4.3.3 | Fees | TC-FEE-01 | N | |
+| REQ-13 | Outstanding = fee minus payments | 5.3 / SAD 4.2.3 | Fees | TC-FEE-01 | N | |
+| REQ-14 | Payment cannot exceed outstanding | 5.3 / SAD 4.2.3 | Fees | TC-FEE-02 | N | |
+| REQ-15 | Student views own fee details | 5.3 / SAD 4.3.3 | Fees | TC-FEE-03 | N | |
+| REQ-16 | Admin dues report | 5.3 / SAD 3.4 | Fees | Planned | N | |
+| REQ-17 | Student files a complaint | 5.4 / SAD 4.3.4 | Complaints & Leave | TC-REQ-01 | N | |
+| REQ-18 | Admin updates complaint status | 5.4 / SAD 4.3.4 | Complaints & Leave | TC-REQ-02 | N | |
+| REQ-19 | Student submits a leave request | 5.4 / SAD 4.2.4 | Complaints & Leave | TC-REQ-03 | N | |
+| REQ-20 | Admin approves or rejects leave | 5.4 / SAD 4.2.4 | Complaints & Leave | TC-REQ-04 | N | |
+| REQ-21 | Login | 5.1 / SAD 4.2.1 | Accounts | TC-ACC-01, TC-ACC-02, TC-ACC-04 | N | |
+| SEC-1 | Passwords stored hashed | 6.3 / SAD 3.9 | Accounts | Planned (STP 5.1) | N | |
+| SEC-2 | Role-based access for admin pages | 6.3 / SAD 3.9 | Accounts | TC-SEC-01 | N | |
+| SEC-3 | Input validation and sanitising | 6.3 / SAD 3.9 | All modules | Planned (STP 5.1) | N | |
+| SEC-4 | Session expiry and rejection | 6.3 / SAD 4.2.1 | Accounts | TC-SEC-02 | N | |
+| SEC-5 | CSRF protection | 6.3 / SAD 3.9 | Web UI | Planned (STP 5.1) | N | |
+| SEC-6 | Audit log | 6.3 / SAD 3.9 | Logging & Audit | Planned (STP 5.1) | N | |
+| NFR-1 | Response time | 6.1 / SAD 3.6 | All modules | TC-PERF-01 | N | |
+| NFR-2 | Complaint in 4 screens | 6.4 / SAD 4.5 | Web UI | TC-USE-01 | N | |
+| NFR-3 | Atomic updates | 6.4 / SAD 4.2.2 | Rooms, Fees, Complaints & Leave | Planned | N | |
+| NFR-4 | Modular code, 70% coverage | 6.4 / SAD 4.1 | All modules | Planned | N | |
+| NFR-5 | Chrome and Firefox compatibility | 6.4 / SAD 3.6 | Web UI | Planned | N | |
 ---
 
 ## Use Cases (reference list for the Analysis Models section)
