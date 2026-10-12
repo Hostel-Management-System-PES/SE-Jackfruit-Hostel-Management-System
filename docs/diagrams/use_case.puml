@@ -1,0 +1,37 @@
+@startuml use_case
+left to right direction
+skinparam packageStyle rectangle
+actor Student
+actor Admin
+
+rectangle "Hostel Management System" {
+  usecase "UC-01\nRegister / Login" as UC01
+  usecase "UC-02\nManage Student Profile" as UC02
+  usecase "UC-03\nVerify Student Registration" as UC03
+  usecase "UC-04\nManage Rooms & Blocks" as UC04
+  usecase "UC-05\nAllocate Room" as UC05
+  usecase "UC-06\nDeallocate Room" as UC06
+  usecase "UC-07\nView Fee Details" as UC07
+  usecase "UC-08\nRecord Fee Payment" as UC08
+  usecase "UC-09\nSubmit Complaint" as UC09
+  usecase "UC-10\nManage Complaint Status" as UC10
+  usecase "UC-11\nSubmit Leave Request" as UC11
+  usecase "UC-12\nApprove / Reject Leave" as UC12
+}
+
+Student --> UC01
+Admin --> UC01
+Student --> UC02
+Student --> UC07
+Student --> UC09
+Student --> UC11
+
+Admin --> UC03
+Admin --> UC04
+Admin --> UC05
+Admin --> UC06
+Admin --> UC08
+Admin --> UC10
+Admin --> UC12
+
+@enduml

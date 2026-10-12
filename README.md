@@ -42,7 +42,7 @@ Implementation and testing will be carried out in later phases.
 | Member | SRN | Responsibility |
 |---|---|---|
 | Vilohith | SRN | Student & Access Management |
-| Prathiksha | SRN | Room & Allocation Management |
+| Prathiksha | PES1UG24CS925 | Room & Allocation Management |
 | Tejasvi K S | PES1UG24CS499 | Fee Management |
 | Varsha | SRN | Complaints & Leave Management |
 

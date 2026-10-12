@@ -1,0 +1,82 @@
+@startuml er_diagram
+hide circle
+skinparam linetype ortho
+
+entity Block {
+  * block_id : UUID <<PK>>
+  --
+  * block_name : String <<unique>>
+}
+entity Room {
+  * room_id : UUID <<PK>>
+  --
+  * block_id : UUID <<FK>>
+  * room_number : String
+  * room_type : String
+  * capacity : Integer
+  * room_status : Vacant / Occupied
+}
+entity Student {
+  * student_id : UUID <<PK>>
+  --
+  room_id : UUID <<FK>> (null until allocated)
+  * srn : String <<unique>>
+  * email : String <<unique>>
+  * password_hash : String
+  * role : Student / Admin
+  * name : String
+  * account_status : Pending / Active / Rejected
+  contact_no : String
+  guardian_info : String
+}
+entity Fee {
+  * fee_id : UUID <<PK>>
+  --
+  * student_id : UUID <<FK, unique>>
+  room_type : String (if set by room type)
+  * fee_amount : Decimal(10,2)
+}
+entity PaymentRecord {
+  * payment_id : UUID <<PK>>
+  --
+  * student_id : UUID <<FK>>
+  * payment_amount : Decimal(10,2)
+  * payment_date : Date
+}
+entity Complaint {
+  * complaint_id : UUID <<PK>>
+  --
+  * student_id : UUID <<FK>>
+  * room_id : UUID <<FK>>
+  * description : Text
+  * complaint_status : Open / In-progress / Resolved
+  * created_at : DateTime
+}
+entity LeaveRequest {
+  * leave_request_id : UUID <<PK>>
+  --
+  * student_id : UUID <<FK>>
+  * start_date : Date
+  * end_date : Date
+  * reason : Text
+  * leave_status : Pending / Approved / Rejected
+  * created_at : DateTime
+}
+
+Block ||--o{ Room : contains
+Room |o--o{ Student : "is allocated to"
+Student ||--o| Fee : "owes"
+Student ||--o{ PaymentRecord : "pays"
+Student ||--o{ Complaint : files
+Room ||--o{ Complaint : "is subject of"
+Student ||--o{ LeaveRequest : submits
+
+note bottom of Fee
+  Outstanding balance is derived, not stored:
+  fee_amount - SUM(payment_amount)
+end note
+note bottom of Student
+  Admin accounts are Student-table users
+  with role = Admin (no separate entity)
+end note
+@enduml
