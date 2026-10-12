@@ -1,0 +1,22 @@
+@startuml
+actor Admin
+participant "Web UI" as UI
+participant "Fee Service" as FEE
+database "PostgreSQL" as DB
+participant "Audit Log" as LOG
+Admin -> UI: enter student, amount, date, submit
+UI -> FEE: record_payment(student_id, amount, date)
+FEE -> DB: read fee amount and total paid
+DB --> FEE: fee_total, paid
+FEE -> FEE: outstanding = fee_total - paid
+alt amount <= 0 or amount > outstanding
+  FEE --> UI: error 400
+  UI --> Admin: show validation message
+else amount valid
+  FEE -> DB: insert payment record (one transaction)
+  DB --> FEE: ok
+  FEE -> LOG: log payment recorded
+  FEE --> UI: new outstanding
+  UI --> Admin: updated outstanding balance
+end
+@enduml
