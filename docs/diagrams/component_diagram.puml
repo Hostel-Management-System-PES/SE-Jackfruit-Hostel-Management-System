@@ -1,0 +1,32 @@
+@startuml
+skinparam componentStyle rectangle
+actor Student
+actor Admin
+package "Hostel Management System (Django)" {
+  [C1 Web UI] as UI
+  [C2 Accounts & Access] as ACC
+  [C3 Room Allocation] as ROOM
+  [C4 Fee & Payment] as FEE
+  [C5 Complaints & Leave] as REQ
+  [C7 Logging & Audit] as LOG
+}
+database "C6 PostgreSQL" as DB
+Student --> UI
+Admin --> UI
+UI --> ACC : authenticate / authorise
+UI --> ROOM
+UI --> FEE
+UI --> REQ
+ROOM --> ACC : student lookup, Verified check
+FEE --> ACC : student lookup
+REQ --> ACC : student lookup
+REQ --> ROOM : room of complaint
+ACC --> DB
+ROOM --> DB
+FEE --> DB
+REQ --> DB
+ACC --> LOG
+ROOM --> LOG
+FEE --> LOG
+REQ --> LOG
+@enduml
