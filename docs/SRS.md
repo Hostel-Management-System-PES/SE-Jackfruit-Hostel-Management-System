@@ -272,6 +272,7 @@ Student registration (with admin verification), login for both roles, role-based
 | REQ-3 | The system shall allow an admin to approve or reject a pending registration.                  | High     | Functional test    |
 | REQ-4 | The system shall enforce role-based access so students cannot access admin-only views.        | High     | Authorization test |
 | REQ-5 | The system shall allow a student to view and edit their own profile (contact, guardian info). | Medium   | Functional test    |
+| REQ-21 | The system shall allow a Verified user (Student or Admin) to log in with email (or SRN for students) and password, and shall reject invalid credentials and accounts that are not Verified with an error message. | High | Functional test |
 
 ---
 
@@ -472,7 +473,7 @@ Student submits a leave/outing request with the required date range and reason â
 | `role` | Enum/String | Student or Admin | Yes |
 | `room_id` |	UUID/String | Room the student is currently allocated to (empty if none) | No |
 
-* srn and guardian_contact are mandatory only when role = Student.
+`srn` and `guardian_contact` are mandatory only when `role` = Student. For Admin accounts they may be empty.
 
 ### Block
 
