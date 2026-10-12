@@ -6,10 +6,7 @@
 
 ### Hostel Management System
 
-**Version 1.0**
-**Prepared by:** <Member 1 Tejasvi K S – PES1UG24CS499> / <Member 2 Prathiksha – SRN> / <Member 3 Vilohith – PES1UG24CS535> / <Member 4 Varsha – PES1UG24CS516>
-**Group Number:** <G-03>  |  **Project ID:** <HMS-2026-XX>
-**Version 1.2**
+**Version 1.3**
 **Prepared by:** Member 1 Tejasvi K S – PES1UG24CS499 / Member 2 Prathiksha B P – PES1UG24CS925 / Member 3 Vilohith – PES1UG24CS535 / Member 4 Varsha – PES1UG24CS516
 **Group Number:** G-03  |  **Project ID:** HMS-2026
 **Course:** UE24CS341A – Software Engineering, V Semester
@@ -26,10 +23,10 @@
 * 4. Analysis Models
 * 5. System Features
 
-  * 5.1 Student & Access Management *(Owner: P1)*
-  * 5.2 Room & Allocation Management *(Owner: P2)*
-  * 5.3 Fee Management *(Owner: P3)*
-  * 5.4 Complaints & Leave Management *(Owner: P4)*
+  * 5.1 Student & Access Management
+  * 5.2 Room & Allocation Management 
+  * 5.3 Fee Management
+  * 5.4 Complaints & Leave Management
 * 6. Other Nonfunctional Requirements
 * 7. Other Requirements
 * Appendix A: Glossary
