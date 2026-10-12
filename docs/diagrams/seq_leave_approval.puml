@@ -1,0 +1,34 @@
+@startuml
+actor Student
+actor Admin
+participant "Web UI" as UI
+participant "Request Service" as REQ
+database "PostgreSQL" as DB
+participant "Audit Log" as LOG
+Student -> UI: submit leave (from, to, reason)
+UI -> REQ: create_leave(student_id, from, to, reason)
+alt end date before start date
+  REQ --> UI: error 400
+  UI --> Student: show validation message
+else dates valid
+  REQ -> DB: save leave request (status Pending)
+  DB --> REQ: ok
+  REQ --> UI: success
+  UI --> Student: request submitted
+end
+Admin -> UI: open pending requests
+UI -> REQ: list_pending()
+REQ -> DB: query pending leave requests
+DB --> REQ: requests
+Admin -> UI: approve or reject
+UI -> REQ: decide(leave_id, decision)
+alt request already decided
+  REQ --> UI: error 409
+  UI --> Admin: show message
+else request Pending
+  REQ -> DB: update status
+  REQ -> LOG: log decision by Admin
+  REQ --> UI: updated status
+  UI --> Admin: confirmation
+end
+@enduml
