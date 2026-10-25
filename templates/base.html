@@ -1,0 +1,43 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Hostel Management System{% endblock %} | HMS</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{% url 'accounts:home' %}">Hostel Management System</a>
+    {% if user.is_authenticated %}
+      <div class="topbar-user">
+        <span>{{ user.name }}{% if user.srn %} ({{ user.srn }}){% endif %}</span>
+        <span class="divider">|</span>
+        <form method="post" action="{% url 'accounts:logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="link-button">Logout</button>
+        </form>
+      </div>
+    {% endif %}
+  </header>
+
+  <div class="layout{% if not user.is_authenticated %} layout-public{% endif %}">
+    {% if user.is_authenticated and nav_items %}
+      <nav class="sidebar" aria-label="Main navigation">
+        {% for item in nav_items %}
+          <a href="{{ item.url }}"{% if item.active %} class="active" aria-current="page"{% endif %}>{{ item.label }}</a>
+        {% endfor %}
+      </nav>
+    {% endif %}
+
+    <main class="content">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="banner banner-{{ message.tags }}" role="status">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{% comment %}
+Renders every field of a form with its label and errors.
+Errors appear in red below the field and the field is outlined in red (SRS 3.1).
+Usage: {% include "includes/form_fields.html" with form=form %}
+{% endcomment %}
+{% if form.non_field_errors %}
+  <div class="banner banner-error" role="alert">
+    {% for error in form.non_field_errors %}{{ error }}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+  </div>
+{% endif %}
+{% for field in form.hidden_fields %}{{ field }}{% endfor %}
+{% for field in form.visible_fields %}
+  <div class="field{% if field.errors %} has-error{% endif %}">
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    {{ field }}
+    {% if field.help_text %}<small class="help">{{ field.help_text }}</small>{% endif %}
+    {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+  </div>
+{% endfor %}
