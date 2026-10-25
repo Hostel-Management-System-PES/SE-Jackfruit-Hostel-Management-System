@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+  <h1>Welcome, {{ user.name }}</h1>
+
+  {% include "includes/stat_cards.html" with cards=cards %}
+
+  <div class="card">
+    <h2>My Profile</h2>
+    <dl class="kv">
+      <div class="kv-row"><dt>Name</dt><dd>{{ user.name }}</dd></div>
+      <div class="kv-row"><dt>SRN</dt><dd>{{ user.srn }}</dd></div>
+      <div class="kv-row"><dt>Email</dt><dd>{{ user.email }}</dd></div>
+      <div class="kv-row"><dt>Guardian contact</dt><dd>{{ user.guardian_contact }}</dd></div>
+      <div class="kv-row"><dt>Account status</dt><dd><span class="badge badge-verified">{{ user.registration_status }}</span></dd></div>
+    </dl>
+  </div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+  <h1>Admin Dashboard</h1>
+
+  {% include "includes/stat_cards.html" with cards=cards %}
+
+  <div class="card">
+    <h2>Pending student registrations</h2>
+    {% if pending %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>SRN</th><th>Name</th><th>Email</th><th>Guardian contact</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+            {% for student in pending %}
+              <tr>
+                <td>{{ student.srn }}</td>
+                <td>{{ student.name }}</td>
+                <td>{{ student.email }}</td>
+                <td>{{ student.guardian_contact }}</td>
+                <td>
+                  <div class="actions">
+                    <form method="post" action="{% url 'accounts:decide_registration' student.id %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="decision" value="Verified">
+                      <button type="submit" class="btn btn-small">Approve</button>
+                    </form>
+                    <form method="post" action="{% url 'accounts:decide_registration' student.id %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="decision" value="Rejected">
+                      <button type="submit" class="btn btn-small btn-red">Reject</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="empty">No pending registrations.</p>
+    {% endif %}
+  </div>
+{% endblock %}
