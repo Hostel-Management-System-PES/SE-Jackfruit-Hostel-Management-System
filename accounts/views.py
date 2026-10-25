@@ -8,7 +8,7 @@ from hms.dashboard import collect_cards
 
 from . import services
 from .decorators import admin_required, student_required
-from .forms import LoginForm, RegistrationForm
+from .forms import LoginForm, ProfileForm, RegistrationForm
 from .models import User
 
 
@@ -78,3 +78,20 @@ def decide_registration(request, user_id):
         else:
             messages.success(request, f"{user.name} has been rejected.")
     return redirect("accounts:admin_dashboard")
+
+@student_required
+def edit_profile(request):
+    if request.method == "POST":
+        form = ProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your profile has been updated.")
+            return redirect("accounts:edit_profile")
+    else:
+        form = ProfileForm(instance=request.user)
+
+    return render(
+        request,
+        "accounts/profile.html",
+        {"form": form},
+    )
