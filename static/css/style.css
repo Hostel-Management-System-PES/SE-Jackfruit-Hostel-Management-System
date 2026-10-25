@@ -1,0 +1,191 @@
+/* Hostel Management System styles, matching the SRS 3.1 prototypes. Owner: P1. */
+:root {
+  --navy: #1e3a5f;
+  --navy-dark: #152b47;
+  --bg: #f4f6fa;
+  --surface: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e3e8ef;
+  --row: #f8fafc;
+  --active: #e8f0fb;
+  --green: #166534;
+  --green-bg: #dcfce7;
+  --green-border: #86efac;
+  --red: #b91c1c;
+  --red-bg: #fee2e2;
+  --red-border: #fca5a5;
+  --blue: #1e40af;
+  --blue-bg: #dbeafe;
+  --amber: #92400e;
+  --amber-bg: #fef3c7;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Inter, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+}
+
+a { color: var(--navy); }
+
+/* Top bar */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 24px;
+  height: 64px;
+  background: var(--navy);
+  color: #fff;
+}
+.brand { color: #fff; font-weight: 700; font-size: 20px; text-decoration: none; }
+.topbar-user { display: flex; align-items: center; gap: 10px; }
+.topbar-user .divider { opacity: 0.6; }
+.topbar-user form { margin: 0; }
+.link-button {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+.link-button:hover { text-decoration: underline; }
+
+/* Layout */
+.layout { display: flex; min-height: calc(100vh - 64px); }
+.layout-public { justify-content: center; }
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  padding: 20px 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+}
+.sidebar a {
+  display: block;
+  padding: 11px 24px;
+  border-left: 4px solid transparent;
+  color: var(--text);
+  font-size: 16px;
+  text-decoration: none;
+}
+.sidebar a:hover { background: var(--row); }
+.sidebar a.active { background: var(--active); border-left-color: var(--navy); color: var(--navy); font-weight: 600; }
+.content { flex: 1; min-width: 0; max-width: 1200px; padding: 28px 32px; }
+.layout-public .content { max-width: 480px; }
+
+h1 { font-size: 26px; margin: 0 0 20px; }
+h2 { font-size: 19px; margin: 0 0 14px; }
+.section-title { margin-top: 28px; }
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px 24px;
+  margin-bottom: 20px;
+}
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+.grid-main-side { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: 24px; align-items: start; }
+.grid-side-main { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(0, 2fr); gap: 24px; align-items: start; }
+.grid-2 > *, .grid-main-side > *, .grid-side-main > * { min-width: 0; }
+
+/* Summary cards (dashboards, fee totals) */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 24px; }
+.stat { margin-bottom: 0; }
+.stat-label { color: var(--muted); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+.stat-value { font-size: 28px; font-weight: 700; margin: 4px 0; }
+.stat-value.text-red { color: var(--red); }
+.stat-sub { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; color: var(--muted); }
+
+/* Key-value rows (profile, room details) */
+.kv { margin: 0; }
+.kv-row { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.kv-row dt { color: var(--muted); }
+.kv-row dd { margin: 0; text-align: right; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 20px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: 0; }
+th { background: var(--row); color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+.card .table-wrap { margin-bottom: 0; }
+.empty { color: var(--muted); }
+
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.actions form { margin: 0; }
+.links { display: flex; flex-wrap: wrap; gap: 10px; }
+.muted { color: var(--muted); }
+
+/* Messages: green success, red failure (SRS 3.1) */
+.banner { padding: 14px 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid transparent; font-size: 16px; }
+.banner-success { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+.banner-error { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
+.banner-info, .banner-warning { background: var(--blue-bg); color: var(--blue); }
+
+/* Forms: error text in red under the field, red outline (SRS 3.1) */
+.field { margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px; }
+.field label { font-weight: 600; }
+input, select, textarea {
+  font: inherit;
+  padding: 11px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  width: 100%;
+  color: var(--text);
+}
+textarea { min-height: 96px; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--active); border-color: var(--navy); }
+.has-error input, .has-error select, .has-error textarea { border-color: var(--red); }
+.field-error { color: var(--red); font-size: 14px; }
+.help { color: var(--muted); }
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 10px 22px;
+  border: 1px solid var(--navy);
+  border-radius: 8px;
+  background: var(--navy);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn:hover { background: var(--navy-dark); }
+.btn-outline { background: #fff; color: var(--navy); }
+.btn-outline:hover { background: var(--active); }
+.btn-small { padding: 5px 14px; font-size: 14px; }
+.btn-red { background: var(--red); border-color: var(--red); }
+.btn-red:hover { background: #991b1b; }
+
+/* Status badges (SRS 3.1) */
+.badge { display: inline-block; padding: 2px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; white-space: nowrap; }
+.badge-vacant, .badge-resolved, .badge-approved, .badge-verified, .badge-paid { background: var(--green-bg); color: var(--green); }
+.badge-occupied, .badge-open, .badge-rejected, .badge-due { background: var(--red-bg); color: var(--red); }
+.badge-in-progress { background: var(--blue-bg); color: var(--blue); }
+.badge-pending { background: var(--amber-bg); color: var(--amber); }
+
+@media (max-width: 900px) {
+  .grid-2, .grid-main-side, .grid-side-main { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .topbar { padding: 12px 16px; height: auto; flex-wrap: wrap; }
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; display: flex; flex-wrap: wrap; padding: 6px; border-right: 0; border-bottom: 1px solid var(--border); }
+  .sidebar a { padding: 8px 12px; border-left: 0; border-radius: 6px; }
+  .content { padding: 18px 16px; }
+}

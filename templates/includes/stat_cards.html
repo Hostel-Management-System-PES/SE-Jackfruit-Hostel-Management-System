@@ -1,0 +1,22 @@
+{% comment %}
+Summary cards at the top of a page.
+Each card: {"label", "value", "sub" (optional), "badge" (optional),
+"badge_class" (optional, defaults to the badge text), "value_class" (optional)}.
+Usage: {% include "includes/stat_cards.html" with cards=cards %}
+{% endcomment %}
+{% if cards %}
+  <div class="stats">
+    {% for card in cards %}
+      <div class="card stat">
+        <div class="stat-label">{{ card.label }}</div>
+        <div class="stat-value {{ card.value_class|default:'' }}">{{ card.value }}</div>
+        {% if card.sub or card.badge %}
+          <div class="stat-sub">
+            {% if card.sub %}<span>{{ card.sub }}</span>{% endif %}
+            {% if card.badge %}<span class="badge badge-{{ card.badge_class|default:card.badge|lower }}">{{ card.badge }}</span>{% endif %}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
