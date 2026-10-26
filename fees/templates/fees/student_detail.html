@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Fees: {{ student.name }}{% endblock %}
+{% block content %}
+  <h1>Fees: {{ student.name }} ({{ student.srn }})</h1>
+
+  <div class="stats">
+    <div class="card stat">
+      <div class="stat-label">Fee amount</div>
+      <div class="stat-value">{% if fee_amount is not None %}₹ {{ fee_amount|floatformat:2|intcomma }}{% else %}Not set{% endif %}</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-label">Total paid</div>
+      <div class="stat-value">₹ {{ paid|floatformat:2|intcomma }}</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-label">Outstanding balance</div>
+      <div class="stat-value{% if outstanding > 0 %} text-red{% endif %}">₹ {{ outstanding|floatformat:2|intcomma }}</div>
+    </div>
+  </div>
+
+  <h2>Payment history</h2>
+  {% if payments %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Date</th><th>Amount</th></tr></thead>
+        <tbody>
+          {% for payment in payments %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ payment.payment_date|date:"d M Y" }}</td>
+              <td>₹ {{ payment.amount|floatformat:2|intcomma }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="card empty">No payments recorded yet.</div>
+  {% endif %}
+
+  <p><a class="btn btn-outline" href="{% url 'fees:overview' %}?student={{ student.id }}">Back to Fees</a></p>
+{% endblock %}
