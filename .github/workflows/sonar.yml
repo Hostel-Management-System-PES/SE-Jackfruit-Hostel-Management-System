@@ -1,0 +1,31 @@
+# TECH-04: static code analysis with SonarQube Cloud on every push and pull request.
+# Owner: P4. Needs the repository secret SONAR_TOKEN (see README).
+# If the secret is not set yet, the scan step is skipped instead of failing.
+name: SonarQube
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  sonar:
+    runs-on: ubuntu-latest
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarQube Cloud scan
+        if: env.SONAR_TOKEN != ''
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_HOST_URL: https://sonarcloud.io
+
+      - name: Explain skipped scan
+        if: env.SONAR_TOKEN == ''
+        run: echo "SONAR_TOKEN is not set, so the SonarQube scan was skipped."

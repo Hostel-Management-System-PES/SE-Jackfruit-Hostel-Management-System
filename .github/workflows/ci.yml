@@ -1,0 +1,59 @@
+# TECH-03: run the automated tests on every push and pull request.
+# Owner: P3. The tests run against PostgreSQL, the same database as Docker.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: hms
+          POSTGRES_USER: hms
+          POSTGRES_PASSWORD: hms
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U hms"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DJANGO_SECRET_KEY: ci-only-secret-key
+      DJANGO_DEBUG: "0"
+      POSTGRES_DB: hms
+      POSTGRES_USER: hms
+      POSTGRES_PASSWORD: hms
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: "5432"
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Django system checks
+        run: python manage.py check
+
+      - name: Check that every model change has a migration
+        run: python manage.py makemigrations --check --dry-run
+
+      - name: Run the tests
+        run: pytest

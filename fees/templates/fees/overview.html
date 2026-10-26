@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Fees{% endblock %}
+{% block content %}
+  <h1>Fees</h1>
+
+  <div class="grid-side-main">
+    <div>
+      <div class="card">
+        <h2>Record payment</h2>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="record_payment">
+          {% include "includes/form_fields.html" with form=payment_form %}
+          <button type="submit" class="btn">Record payment</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Set fee</h2>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="set_fee">
+          {% include "includes/form_fields.html" with form=fee_form %}
+          <button type="submit" class="btn btn-outline">Save fee</button>
+        </form>
+      </div>
+    </div>
+
+    <div>
+      <h2>Outstanding dues</h2>
+      {% if rows %}
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Fee</th><th>Paid</th><th>Outstanding</th></tr></thead>
+            <tbody>
+              {% for row in rows %}
+                <tr>
+                  <td><a href="{% url 'fees:student_detail' row.student.id %}">{{ row.student.name }}</a><br><span class="muted">{{ row.student.srn }}</span></td>
+                  <td>{% if row.fee_amount is not None %}{{ row.fee_amount|floatformat:2|intcomma }}{% else %}<span class="muted">Not set</span>{% endif %}</td>
+                  <td>{{ row.paid|floatformat:2|intcomma }}</td>
+                  <td>{% if row.outstanding is None %}<span class="muted">-</span>{% else %}{{ row.outstanding|floatformat:2|intcomma }}{% endif %}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="card empty">No students registered yet.</div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
