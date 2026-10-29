@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Rooms &amp; Blocks{% endblock %}
+{% block content %}
+  <h1>Rooms &amp; Blocks</h1>
+
+  <div class="grid-main-side">
+    <div>
+      {% if rooms %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Block</th><th>Room</th><th>Type</th><th>Capacity</th><th>Occupancy</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+              {% for room in rooms %}
+                <tr>
+                  <td>{{ room.block.name }}</td>
+                  <td>{{ room }}</td>
+                  <td>{{ room.room_type }}</td>
+                  <td>{{ room.capacity }}</td>
+                  <td>{{ room.occupied_count }} / {{ room.capacity }}</td>
+                  <td><span class="badge badge-{{ room.status|lower }}">{{ room.status }}</span></td>
+                  <td><a class="btn btn-small btn-outline" href="{% url 'rooms:room_edit' room.id %}">Edit</a></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="card empty">No rooms yet. Add a block first, then add rooms.</div>
+      {% endif %}
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>Add room</h2>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add_room">
+          {% include "includes/form_fields.html" with form=room_form %}
+          <button type="submit" class="btn">Save room</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Add block</h2>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add_block">
+          {% include "includes/form_fields.html" with form=block_form %}
+          <button type="submit" class="btn btn-outline">Save block</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

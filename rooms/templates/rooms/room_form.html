@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Edit room{% endblock %}
+{% block content %}
+  <h1>Edit room {{ room }}</h1>
+  <div class="card" style="max-width:520px">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% include "includes/form_fields.html" with form=form %}
+      <div class="actions">
+        <button type="submit" class="btn">Save room</button>
+        <a class="btn btn-outline" href="{% url 'rooms:room_list' %}">Cancel</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}
