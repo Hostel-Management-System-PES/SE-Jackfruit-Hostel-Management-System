@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Room Allocation{% endblock %}
+{% block content %}
+  <h1>Room Allocation</h1>
+
+  <div class="grid-side-main">
+    <div class="card">
+      <h2>Allocate a room</h2>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% include "includes/form_fields.html" with form=form %}
+        <div class="actions">
+          <button type="submit" class="btn">Allocate</button>
+          <a class="btn btn-outline" href="{% url 'rooms:room_list' %}">Cancel</a>
+        </div>
+      </form>
+    </div>
+
+    <div>
+      <h2>Current allocations</h2>
+      {% if allocations %}
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Room</th><th>Student</th><th>Occupancy</th><th>Status</th></tr></thead>
+            <tbody>
+              {% for allocation in allocations %}
+                <tr>
+                  <td>{{ allocation.room }}</td>
+                  <td>{{ allocation.student.name }} ({{ allocation.student.srn }})</td>
+                  <td>{{ allocation.occupied_count }} / {{ allocation.room.capacity }}</td>
+                  <td><span class="badge badge-{{ allocation.room.status|lower }}">{{ allocation.room.status }}</span></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="card empty">No students have been allocated yet.</div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
