@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Complaints &amp; Leave{% endblock %}
+{% block content %}
+  <h1>Complaints &amp; Leave</h1>
+
+  <div class="grid-2">
+    <div class="card">
+      {% if room %}
+        <h2>New complaint (Room {{ room }})</h2>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="complaint">
+          {% include "includes/form_fields.html" with form=complaint_form %}
+          <button type="submit" class="btn">Submit complaint</button>
+        </form>
+      {% else %}
+        <h2>New complaint</h2>
+        <p class="muted">You can file a complaint once a room has been allocated to you.</p>
+      {% endif %}
+
+      <h2 class="section-title">My complaints</h2>
+      {% if complaints %}
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Issue</th><th>Filed</th><th>Status</th></tr></thead>
+            <tbody>
+              {% for complaint in complaints %}
+                <tr>
+                  <td>{{ complaint.description|linebreaksbr }}</td>
+                  <td>{{ complaint.created_at|date:"d M Y" }}</td>
+                  <td><span class="badge badge-{{ complaint.status|lower }}">{{ complaint.status }}</span></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="empty">You have not filed any complaints.</p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h2>New leave request</h2>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="action" value="leave">
+        {% include "includes/form_fields.html" with form=leave_form %}
+        <button type="submit" class="btn">Submit request</button>
+      </form>
+
+      <h2 class="section-title">My leave requests</h2>
+      {% if leaves %}
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Dates</th><th>Reason</th><th>Status</th></tr></thead>
+            <tbody>
+              {% for leave in leaves %}
+                <tr>
+                  <td>{{ leave.start_date|date:"d M Y" }} to {{ leave.end_date|date:"d M Y" }}</td>
+                  <td>{{ leave.reason }}</td>
+                  <td><span class="badge badge-{{ leave.status|lower }}">{{ leave.status }}</span></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="empty">You have not requested any leave.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
