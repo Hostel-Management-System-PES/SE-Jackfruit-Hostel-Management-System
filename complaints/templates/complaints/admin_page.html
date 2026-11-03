@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Complaints &amp; Leave Requests{% endblock %}
+{% block content %}
+  <h1>Complaints &amp; Leave Requests</h1>
+
+  <h2>Complaints</h2>
+  {% if complaints %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Student</th><th>Room</th><th>Issue</th><th>Filed</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for complaint in complaints %}
+            <tr>
+              <td>{{ complaint.student.name }}<br><span class="muted">{{ complaint.student.srn }}</span></td>
+              <td>{{ complaint.room }}</td>
+              <td>{{ complaint.description|linebreaksbr }}</td>
+              <td>{{ complaint.created_at|date:"d M Y" }}</td>
+              <td><span class="badge badge-{{ complaint.status|lower }}">{{ complaint.status }}</span></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="card empty">No complaints have been filed.</div>
+  {% endif %}
+
+  <h2 class="section-title">Leave requests</h2>
+  {% if leaves %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Student</th><th>Dates</th><th>Reason</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for leave in leaves %}
+            <tr>
+              <td>{{ leave.student.name }}<br><span class="muted">{{ leave.student.srn }}</span></td>
+              <td>{{ leave.start_date|date:"d M Y" }} to {{ leave.end_date|date:"d M Y" }}</td>
+              <td>{{ leave.reason }}</td>
+              <td><span class="badge badge-{{ leave.status|lower }}">{{ leave.status }}</span></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="card empty">No leave requests yet.</div>
+  {% endif %}
+{% endblock %}
