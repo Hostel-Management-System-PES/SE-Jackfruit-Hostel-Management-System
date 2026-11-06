@@ -1,4 +1,4 @@
-"""Registration and login forms (REQ-1, REQ-21)."""
+"""Registration, login and profile forms (REQ-1, REQ-21, REQ-5)."""
 import re
 
 from django import forms
@@ -81,3 +81,26 @@ class LoginForm(AuthenticationForm):
             raise forms.ValidationError(self.error_messages["pending"], code="pending")
         if user.registration_status == User.Status.REJECTED:
             raise forms.ValidationError(self.error_messages["rejected"], code="rejected")
+
+
+class ProfileForm(forms.Form):
+    """REQ-5: the fields a student may change. SRN and email are fixed after registration."""
+
+    name = forms.CharField(max_length=100, error_messages={"required": "Name is required."})
+    guardian_contact = forms.CharField(
+        label="Guardian contact number",
+        max_length=15,
+        error_messages={"required": "Guardian contact is required."},
+    )
+
+    def clean_name(self):
+        name = self.cleaned_data["name"].strip()
+        if not name:
+            raise forms.ValidationError("Name is required.")
+        return name
+
+    def clean_guardian_contact(self):
+        contact = self.cleaned_data["guardian_contact"].strip().replace(" ", "")
+        if not PHONE_PATTERN.match(contact):
+            raise forms.ValidationError("Enter a valid phone number (10 to 15 digits).")
+        return contact
