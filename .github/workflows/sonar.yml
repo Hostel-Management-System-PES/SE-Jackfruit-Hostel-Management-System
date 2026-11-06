@@ -20,9 +20,23 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up Python
+        if: env.SONAR_TOKEN != ''
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Run tests with coverage
+        if: env.SONAR_TOKEN != ''
+        run: |
+          pip install -r requirements.txt
+          coverage run --source=. -m pytest
+          coverage xml -o coverage.xml
+
       - name: SonarQube Cloud scan
         if: env.SONAR_TOKEN != ''
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_HOST_URL: https://sonarcloud.io
 
