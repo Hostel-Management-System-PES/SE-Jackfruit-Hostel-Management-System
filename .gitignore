@@ -19,6 +19,9 @@ media/
 htmlcov/
 coverage.xml
 
+# Load test output (the summary goes in docs/testing/performance_results.md)
+loadtest/results*
+
 # Editors and OS
 .idea/
 .vscode/
