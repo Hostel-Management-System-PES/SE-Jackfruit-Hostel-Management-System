@@ -1,4 +1,4 @@
-"""Views of the Accounts module (REQ-1, REQ-2, REQ-3, REQ-4, REQ-21)."""
+"""Views of the Accounts module (REQ-1, REQ-2, REQ-3, REQ-4, REQ-5, REQ-21)."""
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
@@ -8,7 +8,7 @@ from hms.dashboard import collect_cards
 
 from . import services
 from .decorators import admin_required, student_required
-from .forms import LoginForm, RegistrationForm
+from .forms import LoginForm, ProfileForm, RegistrationForm
 from .models import User
 
 
@@ -53,6 +53,25 @@ def student_dashboard(request):
     return render(
         request, "accounts/student_dashboard.html", {"cards": collect_cards(request.user)}
     )
+
+
+@student_required
+def profile(request):
+    """REQ-5: My Profile. Always the logged-in student, so nobody can edit another profile."""
+    user = request.user
+    form = ProfileForm(
+        request.POST or None,
+        initial={"name": user.name, "guardian_contact": user.guardian_contact},
+    )
+    if request.method == "POST" and form.is_valid():
+        services.update_profile(
+            user=user,
+            name=form.cleaned_data["name"],
+            guardian_contact=form.cleaned_data["guardian_contact"],
+        )
+        messages.success(request, "Your profile was updated.")
+        return redirect("accounts:profile")
+    return render(request, "accounts/profile.html", {"form": form})
 
 
 @admin_required

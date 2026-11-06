@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+  <h1>My Profile</h1>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Account details</h2>
+      <dl class="kv">
+        <div class="kv-row"><dt>SRN</dt><dd>{{ user.srn }}</dd></div>
+        <div class="kv-row"><dt>Email</dt><dd>{{ user.email }}</dd></div>
+        <div class="kv-row"><dt>Account status</dt><dd><span class="badge badge-verified">{{ user.registration_status }}</span></dd></div>
+        <div class="kv-row"><dt>Registered on</dt><dd>{{ user.created_at|date:"d M Y" }}</dd></div>
+      </dl>
+      <p class="muted">SRN and email cannot be changed. Contact the hostel office if they are wrong.</p>
+    </div>
+
+    <div class="card">
+      <h2>Edit profile</h2>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% include "includes/form_fields.html" with form=form %}
+        <button type="submit" class="btn">Save changes</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

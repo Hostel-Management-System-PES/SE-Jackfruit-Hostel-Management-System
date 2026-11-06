@@ -1,5 +1,5 @@
 """
-Business rules of the Accounts module (REQ-1, REQ-2, REQ-3).
+Business rules of the Accounts module (REQ-1, REQ-2, REQ-3, REQ-5).
 
 Other modules may call the read-only helpers at the bottom
 (verified_students, students) but never change accounts data directly.
@@ -40,6 +40,16 @@ def decide_registration(*, user_id, decision):
             raise AccountError("This registration has already been decided.")
         user.registration_status = decision
         user.save(update_fields=["registration_status"])
+    return user
+
+
+def update_profile(*, user, name, guardian_contact):
+    """REQ-5: a student changes their own name and guardian contact (never SRN or email)."""
+    if not user.is_student_role:
+        raise AccountError("Only students have a profile to edit.")
+    user.name = name.strip()
+    user.guardian_contact = guardian_contact.strip()
+    user.save(update_fields=["name", "guardian_contact"])
     return user
 
 

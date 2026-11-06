@@ -10,6 +10,7 @@ class AccountsConfig(AppConfig):
     hms_menu = [
         {"label": "Dashboard", "url_name": "accounts:student_dashboard", "roles": ["Student"], "order": 10},
         {"label": "Dashboard", "url_name": "accounts:admin_dashboard", "roles": ["Admin"], "order": 10},
+        {"label": "My Profile", "url_name": "accounts:profile", "roles": ["Student"], "order": 90},
     ]
 
     # Summary cards shown on the dashboards (see hms/dashboard.py).

@@ -2,12 +2,15 @@
 Django settings for the Hostel Management System (HMS).
 
 Owner: P1 (TECH-01). Other modules never edit this file:
-- rooms, fees and complaints are added to INSTALLED_APPS automatically when
-  their folder exists (see HMS_ENABLED_MODULES), so each module can be merged
-  on its own without touching this file.
+- rooms, fees, complaints, audit and security are added to INSTALLED_APPS
+  automatically when their folder exists (see HMS_ENABLED_MODULES), so each
+  module can be merged on its own without touching this file.
+- A module can add its own settings in <module>/hms_settings.py (loaded at the
+  end of this file). MIDDLEWARE_APPEND in that file adds middleware.
 - PostgreSQL is used when POSTGRES_DB is set (Docker, CI). Otherwise a local
   SQLite file is used, so the project also runs without Docker.
 """
+import importlib
 import os
 from pathlib import Path
 
@@ -24,8 +27,10 @@ ALLOWED_HOSTS = os.environ.get(
     "DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,0.0.0.0"
 ).split(",")
 
-# Functional modules (one Django app each). accounts is always present.
-HMS_MODULES = ["rooms", "fees", "complaints"]
+# Modules (one Django app each). accounts is always present.
+# rooms, fees, complaints: functional modules. audit: audit log (SEC-6).
+# security: session policy (SEC-4).
+HMS_MODULES = ["rooms", "fees", "complaints", "audit", "security"]
 HMS_ENABLED_MODULES = [
     module for module in HMS_MODULES if (BASE_DIR / module / "apps.py").exists()
 ]
@@ -121,3 +126,13 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MESSAGE_TAGS = {message_constants.ERROR: "error"}
+
+# Module settings: each enabled module may provide <module>/hms_settings.py.
+# Upper-case names in it become settings; MIDDLEWARE_APPEND adds middleware.
+for _module in HMS_ENABLED_MODULES:
+    if (BASE_DIR / _module / "hms_settings.py").exists():
+        _extra = importlib.import_module(f"{_module}.hms_settings")
+        MIDDLEWARE = MIDDLEWARE + list(getattr(_extra, "MIDDLEWARE_APPEND", []))
+        for _name in dir(_extra):
+            if _name.isupper() and _name != "MIDDLEWARE_APPEND":
+                globals()[_name] = getattr(_extra, _name)

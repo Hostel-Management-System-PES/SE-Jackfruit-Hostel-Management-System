@@ -14,5 +14,6 @@
       <div class="kv-row"><dt>Guardian contact</dt><dd>{{ user.guardian_contact }}</dd></div>
       <div class="kv-row"><dt>Account status</dt><dd><span class="badge badge-verified">{{ user.registration_status }}</span></dd></div>
     </dl>
+    <p style="margin:16px 0 0"><a class="btn btn-outline" href="{% url 'accounts:profile' %}">Edit profile</a></p>
   </div>
 {% endblock %}

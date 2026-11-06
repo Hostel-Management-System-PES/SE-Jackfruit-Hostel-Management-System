@@ -2,7 +2,7 @@
 Root URL configuration.
 
 Owner: P1. Each module's URLs are included automatically when the module is
-enabled in settings (HMS_ENABLED_MODULES), under /<module>/.
+enabled in settings (HMS_ENABLED_MODULES) and has a urls.py, under /<module>/.
 """
 from django.conf import settings
 from django.contrib import admin
@@ -14,4 +14,5 @@ urlpatterns = [
 ]
 
 for module in settings.HMS_ENABLED_MODULES:
-    urlpatterns.append(path(f"{module}/", include(f"{module}.urls")))
+    if (settings.BASE_DIR / module / "urls.py").exists():
+        urlpatterns.append(path(f"{module}/", include(f"{module}.urls")))
