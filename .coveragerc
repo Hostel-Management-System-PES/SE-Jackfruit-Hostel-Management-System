@@ -1,0 +1,22 @@
+# NFR-4: line coverage settings. Owner: P3.
+# Measures the app code only: tests, migrations and tooling are left out.
+[run]
+source = .
+omit =
+    */migrations/*
+    */tests/*
+    tests/*
+    manage.py
+    hms/asgi.py
+    hms/wsgi.py
+    loadtest/*
+    docs/*
+    .venv/*
+    venv/*
+
+[report]
+show_missing = True
+skip_empty = True
+
+[html]
+directory = htmlcov

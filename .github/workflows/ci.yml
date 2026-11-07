@@ -1,4 +1,5 @@
 # TECH-03: run the automated tests on every push and pull request.
+# NFR-4: every module must reach at least 70% line coverage.
 # Owner: P3. The tests run against PostgreSQL, the same database as Docker.
 name: CI
 
@@ -47,7 +48,7 @@ jobs:
           cache: pip
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --only-binary :all: --require-hashes -r requirements.lock
 
       - name: Django system checks
         run: python manage.py check
@@ -55,5 +56,28 @@ jobs:
       - name: Check that every model change has a migration
         run: python manage.py makemigrations --check --dry-run
 
-      - name: Run the tests
-        run: pytest
+      - name: Run the tests with coverage
+        run: coverage run -m pytest
+
+      - name: Coverage report (whole project)
+        run: coverage report
+
+      - name: Check at least 70% coverage per module (NFR-4)
+        run: |
+          for module in accounts rooms fees complaints audit security; do
+            if [ -d "$module" ]; then
+              echo "== $module =="
+              coverage report --include="$module/*" --fail-under=70
+            fi
+          done
+
+      - name: Build the HTML coverage report
+        if: always()
+        run: coverage html
+
+      - name: Upload the coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: htmlcov/
