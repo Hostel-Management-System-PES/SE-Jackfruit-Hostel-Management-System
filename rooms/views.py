@@ -1,7 +1,8 @@
-"""Views of the Rooms module (REQ-6, REQ-7, REQ-8, REQ-10)."""
+"""Views of the Rooms module (REQ-6, REQ-7, REQ-8, REQ-9, REQ-10)."""
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import NoReverseMatch, reverse
+from django.views.decorators.http import require_POST
 
 from accounts.decorators import admin_required, student_required
 
@@ -68,6 +69,19 @@ def allocate(request):
             return redirect("rooms:allocate")
     context = {"form": form, "allocations": services.current_allocations()}
     return render(request, "rooms/allocate.html", context)
+
+
+@admin_required
+@require_POST
+def deallocate(request, allocation_id):
+    """REQ-9: the Deallocate button in the Current allocations table."""
+    try:
+        student, room = services.deallocate_student(allocation_id=allocation_id)
+    except services.AllocationError as error:
+        messages.error(request, str(error))
+    else:
+        messages.success(request, f"{student.name} was deallocated from room {room}.")
+    return redirect("rooms:allocate")
 
 
 @student_required
