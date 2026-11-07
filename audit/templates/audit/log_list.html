@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Audit Log{% endblock %}
+{% block content %}
+  <h1>Audit Log</h1>
+  <p class="muted">Every login, failed login, logout, denied page and admin change is recorded here. Entries cannot be edited or deleted.</p>
+
+  <form method="get" class="actions" style="align-items: center; margin-bottom: 16px;">
+    <label for="id_action"><strong>Show</strong></label>
+    <select name="action" id="id_action" style="width: auto;">
+      <option value="">All events</option>
+      {% for value, label in actions %}
+        <option value="{{ value }}"{% if value == action %} selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-small">Filter</button>
+  </form>
+
+  {% if page.object_list %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Time</th><th>Event</th><th>User</th><th>Details</th><th>IP address</th></tr></thead>
+        <tbody>
+          {% for entry in page.object_list %}
+            <tr>
+              <td>{{ entry.timestamp|date:"d M Y, H:i:s" }}</td>
+              <td><span class="badge {% if entry.action == 'login_failed' or entry.action == 'access_denied' %}badge-due{% else %}badge-in-progress{% endif %}">{{ entry.get_action_display }}</span></td>
+              <td>{{ entry.identifier|default:"-" }}</td>
+              <td>{{ entry.details }}</td>
+              <td>{{ entry.ip_address|default:"-" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if page.has_other_pages %}
+      <div class="links">
+        {% if page.has_previous %}<a class="btn btn-small btn-outline" href="?action={{ action }}&amp;page={{ page.previous_page_number }}">Newer</a>{% endif %}
+        <span class="muted">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+        {% if page.has_next %}<a class="btn btn-small btn-outline" href="?action={{ action }}&amp;page={{ page.next_page_number }}">Older</a>{% endif %}
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="card empty">No audit entries yet.</div>
+  {% endif %}
+{% endblock %}

@@ -1,5 +1,5 @@
 """
-Business rules of the Rooms module (REQ-7, REQ-8, REQ-10).
+Business rules of the Rooms module (REQ-7, REQ-8, REQ-9, REQ-10).
 
 Other modules may call get_student_room() to find a student's room.
 """
@@ -63,6 +63,25 @@ def allocate_student(*, student_id, room_id):
         allocation = Allocation.objects.create(student=student, room=room)
         refresh_room_status(room)
     return allocation
+
+
+def deallocate_student(*, allocation_id):
+    """
+    REQ-9, REQ-10: remove a student's allocation (for example on checkout).
+    The room row is locked, the allocation deleted and the room status updated
+    in one transaction, so occupancy can never be left half-updated (NFR-3).
+    Returns (student, room) so the caller can show who left which room.
+    """
+    with transaction.atomic():
+        try:
+            allocation = Allocation.objects.select_related("student").get(pk=allocation_id)
+        except Allocation.DoesNotExist as exc:
+            raise AllocationError("This allocation no longer exists.") from exc
+        room = Room.objects.select_for_update().get(pk=allocation.room_id)
+        student = allocation.student
+        allocation.delete()
+        refresh_room_status(room)
+    return student, room
 
 
 def get_student_room(student):
