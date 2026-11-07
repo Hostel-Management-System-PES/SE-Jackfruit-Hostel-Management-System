@@ -7,10 +7,23 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+COPY requirements.lock .
+RUN pip install --only-binary :all: --require-hashes -r requirements.lock
 
-COPY . .
+# Copy only the app code, never the whole build context.
+COPY manage.py .
+COPY hms ./hms
+COPY accounts ./accounts
+COPY rooms ./rooms
+COPY fees ./fees
+COPY complaints ./complaints
+COPY audit ./audit
+COPY templates ./templates
+COPY static ./static
+
+# Run as a normal user, not root.
+RUN useradd --no-create-home appuser
+USER appuser
 
 EXPOSE 8000
 
