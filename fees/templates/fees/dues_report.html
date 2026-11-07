@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Dues Report{% endblock %}
+{% block content %}
+  <h1>Dues Report</h1>
+
+  <div class="stats">
+    <div class="card stat">
+      <div class="stat-label">Total fees</div>
+      <div class="stat-value">₹ {{ totals.fee|floatformat:2|intcomma }}</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-label">Total collected</div>
+      <div class="stat-value">₹ {{ totals.paid|floatformat:2|intcomma }}</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-label">Total outstanding</div>
+      <div class="stat-value{% if totals.outstanding > 0 %} text-red{% endif %}">₹ {{ totals.outstanding|floatformat:2|intcomma }}</div>
+      <div class="stat-sub">{{ totals.with_dues }} student{{ totals.with_dues|pluralize }} with dues</div>
+    </div>
+  </div>
+
+  <div class="links" style="margin-bottom: 16px;">
+    {% if hide_paid %}
+      <a class="btn btn-small btn-outline" href="{% url 'fees:dues_report' %}">Show all students</a>
+    {% else %}
+      <a class="btn btn-small btn-outline" href="{% url 'fees:dues_report' %}?hide_paid=1">Show only students with dues</a>
+    {% endif %}
+  </div>
+
+  {% if rows %}
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Student</th><th>Fee</th><th>Paid</th><th>Outstanding</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for row in rows %}
+            <tr>
+              <td><a href="{% url 'fees:student_detail' row.student.id %}">{{ row.student.name }}</a><br><span class="muted">{{ row.student.srn }}</span></td>
+              <td>₹ {{ row.fee_amount|floatformat:2|intcomma }}</td>
+              <td>₹ {{ row.paid|floatformat:2|intcomma }}</td>
+              <td>₹ {{ row.outstanding|floatformat:2|intcomma }}</td>
+              <td>{% if row.outstanding > 0 %}<span class="badge badge-due">Due</span>{% else %}<span class="badge badge-paid">Paid</span>{% endif %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="card empty">{% if hide_paid %}No student has outstanding dues.{% else %}No fees have been set yet.{% endif %}</div>
+  {% endif %}
+
+  {% if no_fee %}
+    <h2 class="section-title">Students without a fee</h2>
+    <div class="card">
+      <p class="muted">Set a fee for these students on the Fees page.</p>
+      <ul>
+        {% for student in no_fee %}
+          <li><a href="{% url 'fees:overview' %}?student={{ student.id }}">{{ student.name }}</a> <span class="muted">{{ student.srn }}</span></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+{% endblock %}

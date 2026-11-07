@@ -9,6 +9,8 @@ class FeesConfig(AppConfig):
     # Menu entries shown in the left navigation (see hms/context_processors.py).
     hms_menu = [
         {"label": "Fees", "url_name": "fees:overview", "roles": ["Admin"], "order": 40},
+        {"label": "Dues Report", "url_name": "fees:dues_report", "roles": ["Admin"], "order": 45},
+        {"label": "Fee Details", "url_name": "fees:my_fees", "roles": ["Student"], "order": 40},
     ]
 
     # Summary cards shown on the dashboards (see hms/dashboard.py).

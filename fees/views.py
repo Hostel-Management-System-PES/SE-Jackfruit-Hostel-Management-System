@@ -1,9 +1,9 @@
-"""Views of the Fees module (REQ-11, REQ-12, REQ-13, REQ-14)."""
+"""Views of the Fees module (REQ-11 to REQ-16)."""
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, redirect, render
 
-from accounts.decorators import admin_required
+from accounts.decorators import admin_required, student_required
 
 from . import services
 from .forms import FeeForm, PaymentForm
@@ -65,3 +65,17 @@ def student_detail(request, student_id):
     student = get_object_or_404(user_model, pk=student_id, role=user_model.Role.STUDENT)
     context = {"student": student, **services.fee_summary(student)}
     return render(request, "fees/student_detail.html", context)
+
+
+@admin_required
+def dues_report(request):
+    """REQ-16: report of outstanding dues across all students."""
+    hide_paid = request.GET.get("hide_paid") == "1"
+    context = {"hide_paid": hide_paid, **services.dues_report(hide_paid=hide_paid)}
+    return render(request, "fees/dues_report.html", context)
+
+
+@student_required
+def my_fees(request):
+    """REQ-15: Fee Details page. A student only ever sees their own fees."""
+    return render(request, "fees/my_fees.html", services.fee_summary(request.user))

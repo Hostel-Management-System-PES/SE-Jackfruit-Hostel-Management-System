@@ -2,7 +2,7 @@
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect, render
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_safe
 
 from hms.dashboard import collect_cards
 
@@ -12,6 +12,7 @@ from .forms import LoginForm, ProfileForm, RegistrationForm
 from .models import User
 
 
+@require_safe
 def home(request):
     """Send each user to the dashboard for their role."""
     user = request.user

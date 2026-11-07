@@ -30,14 +30,13 @@ jobs:
       - name: Run tests with coverage
         if: env.SONAR_TOKEN != ''
         run: |
-          pip install -r requirements.txt
+          pip install --only-binary :all: --require-hashes -r requirements.lock
           coverage run --source=. -m pytest
           coverage xml -o coverage.xml
 
       - name: SonarQube Cloud scan
         if: env.SONAR_TOKEN != ''
         uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602 # v6
-
         env:
           SONAR_HOST_URL: https://sonarcloud.io
 
