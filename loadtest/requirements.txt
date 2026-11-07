@@ -1,0 +1,2 @@
+# Only needed to run the load test (NFR-1). Not installed by the app or CI.
+locust>=2.31,<3
