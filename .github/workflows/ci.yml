@@ -48,7 +48,7 @@ jobs:
           cache: pip
 
       - name: Install dependencies
-        run: pip install --only-binary :all: --require-hashes -r requirements.lock
+        run: "pip install --only-binary :all: --require-hashes -r requirements.lock"
 
       - name: Django system checks
         run: python manage.py check
