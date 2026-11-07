@@ -1,5 +1,5 @@
 """
-Business rules of the Fees module (REQ-11, REQ-12, REQ-13, REQ-14).
+Business rules of the Fees module (REQ-11 to REQ-16).
 
 All money values are Decimal, never float, so there are no rounding errors.
 """
@@ -44,21 +44,32 @@ def get_outstanding(student):
 
 
 def set_fee(*, student, amount):
-    """REQ-11: create or update the single fee record of a student."""
+    """
+    REQ-11: create or update the single fee record of a student.
+    The check against the amount already paid and the save run in one
+    transaction with the fee row locked, so a payment recorded at the same
+    time cannot slip in between (NFR-3).
+    """
     amount = Decimal(amount)
     if amount <= 0:
         raise FeeError("Fee amount must be greater than 0.", field="amount")
     user_model = get_user_model()
     if student.role != user_model.Role.STUDENT:
         raise FeeError("Fees can only be set for students.", field="student")
-    paid = total_paid(student)
-    if amount < paid:
-        raise FeeError(
-            f"Fee cannot be lower than the amount already paid ({rupees(paid)}).",
-            field="amount",
-            hint="Fee cannot be lower than the amount already paid.",
-        )
-    fee, _created = Fee.objects.update_or_create(student=student, defaults={"amount": amount})
+    with transaction.atomic():
+        fee = Fee.objects.select_for_update().filter(student=student).first()
+        paid = total_paid(student)
+        if amount < paid:
+            raise FeeError(
+                f"Fee cannot be lower than the amount already paid ({rupees(paid)}).",
+                field="amount",
+                hint="Fee cannot be lower than the amount already paid.",
+            )
+        if fee is None:
+            fee = Fee.objects.create(student=student, amount=amount)
+        else:
+            fee.amount = amount
+            fee.save(update_fields=["amount", "updated_at"])
     return fee
 
 
@@ -128,3 +139,22 @@ def fee_overview():
             }
         )
     return rows
+
+
+def dues_report(*, hide_paid=False):
+    """
+    REQ-16: outstanding dues across all students, largest balance first,
+    with totals. Students without a fee are listed separately at the end.
+    """
+    rows = [row for row in fee_overview() if row["fee_amount"] is not None]
+    if hide_paid:
+        rows = [row for row in rows if row["outstanding"] > 0]
+    rows.sort(key=lambda row: (-row["outstanding"], row["student"].name))
+    totals = {
+        "fee": sum((row["fee_amount"] for row in rows), ZERO),
+        "paid": sum((row["paid"] for row in rows), ZERO),
+        "outstanding": sum((row["outstanding"] for row in rows), ZERO),
+        "with_dues": sum(1 for row in rows if row["outstanding"] > 0),
+    }
+    no_fee = [row["student"] for row in fee_overview() if row["fee_amount"] is None]
+    return {"rows": rows, "totals": totals, "no_fee": no_fee}
