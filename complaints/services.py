@@ -1,4 +1,7 @@
-"""Business rules of the Complaints & Leave module (REQ-17, REQ-19)."""
+"""Business rules of the Complaints & Leave module (REQ-17 to REQ-20)."""
+from django.db import transaction
+from django.utils import timezone
+
 from rooms.services import get_student_room
 
 from .models import Complaint, LeaveRequest
@@ -50,6 +53,44 @@ def submit_leave(*, student, start_date, end_date, reason):
         reason=reason,
         status=LeaveRequest.Status.PENDING,
     )
+
+
+def update_complaint_status(*, complaint_id, status):
+    """REQ-18: the admin sets a complaint to Open, In-progress or Resolved."""
+    if status not in Complaint.Status.values:
+        raise RequestError("Choose a valid status: Open, In-progress or Resolved.", field="status")
+    with transaction.atomic():
+        try:
+            complaint = Complaint.objects.select_for_update().get(pk=complaint_id)
+        except Complaint.DoesNotExist as exc:
+            raise RequestError("This complaint no longer exists.") from exc
+        if complaint.status == status:
+            raise RequestError(f"The complaint is already {status}.", field="status")
+        complaint.status = status
+        complaint.save(update_fields=["status", "updated_at"])
+    return complaint
+
+
+def decide_leave(*, leave_id, decision):
+    """
+    REQ-20: the admin approves or rejects a Pending leave request.
+    The row is locked, so two admins cannot decide the same request; a
+    request that is already Approved or Rejected cannot be decided again.
+    """
+    allowed = (LeaveRequest.Status.APPROVED, LeaveRequest.Status.REJECTED)
+    if decision not in allowed:
+        raise RequestError("Choose Approve or Reject.", field="decision")
+    with transaction.atomic():
+        try:
+            leave = LeaveRequest.objects.select_for_update().get(pk=leave_id)
+        except LeaveRequest.DoesNotExist as exc:
+            raise RequestError("This leave request no longer exists.") from exc
+        if leave.status != LeaveRequest.Status.PENDING:
+            raise RequestError(f"This leave request was already {leave.status.lower()}.")
+        leave.status = decision
+        leave.decided_at = timezone.now()
+        leave.save(update_fields=["status", "decided_at"])
+    return leave
 
 
 def student_complaints(student):
