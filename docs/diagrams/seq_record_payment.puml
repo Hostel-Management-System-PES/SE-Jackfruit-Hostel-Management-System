@@ -6,17 +6,17 @@ database "PostgreSQL" as DB
 participant "Audit Log" as LOG
 Admin -> UI: enter student, amount, date, submit
 UI -> FEE: record_payment(student_id, amount, date)
-FEE -> DB: read fee amount and total paid
+FEE -> DB: lock fee row, read fee amount and total paid (one transaction)
 DB --> FEE: fee_total, paid
 FEE -> FEE: outstanding = fee_total - paid
-alt amount <= 0 or amount > outstanding
-  FEE --> UI: error 400
-  UI --> Admin: show validation message
+alt amount <= 0, amount > outstanding or date in the future
+  FEE --> UI: FeeError
+  UI --> Admin: same page, red banner and field error, nothing saved
 else amount valid
-  FEE -> DB: insert payment record (one transaction)
+  FEE -> DB: insert payment record (same transaction)
   DB --> FEE: ok
-  FEE -> LOG: log payment recorded
+  DB -> LOG: post_save signal: log payment recorded
   FEE --> UI: new outstanding
-  UI --> Admin: updated outstanding balance
+  UI --> Admin: redirect, green banner with outstanding balance
 end
 @enduml

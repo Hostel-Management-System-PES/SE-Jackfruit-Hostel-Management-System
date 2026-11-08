@@ -2,7 +2,7 @@
 
 ## Software Requirements Specification for Hostel Management System
 
-**Version 1.3**
+**Version 2.0 (Final)**
 **Prepared by:** Member 1 Tejasvi K S – PES1UG24CS499 / Member 2 Prathiksha B P – PES1UG24CS925 / Member 3 Vilohith – PES1UG24CS535 / Member 4 Varsha – PES1UG24CS516
 
 **Group Number:** G-03  |  **Project ID:** HMS-2026
@@ -11,7 +11,7 @@
 
 **Organization:** PES University, Bangalore — Dept. of CSE
 
-**Date Created:** 16/9/26
+**Date Created:** 16/9/26  |  **Last Updated:** 8/11/26
 
 ---
 
@@ -32,6 +32,8 @@
 * Appendix A: Glossary
 * Appendix B: Field Layouts
 * Appendix C: Requirement Traceability Matrix
+* Appendix D: Use Cases
+* Appendix E: Changes After the Phase-1 Baseline
 
 ---
 ## Revision history
@@ -43,6 +45,7 @@
 | Vilohith, Varsha, Prathiksha | 5/10/26 | Made required changes to SRS | 1.1 |
 | Tejasvi K S | 11/10/26 | Fixed minor wordings and table structure | 1.2 | 
 | Tejasvi K S, Prathiksha B P, Vilohith, Varsha | 12/10/26 | Added REQ-21, NFR-2 to NFR-5, security objectives, SEC-5, SEC-6, second use case diagram and traceability matrix | 1.3 |
+| Tejasvi K S, Prathiksha B P, Vilohith, Varsha | 8/11/26 | Final version after Sprint 2: aligned with the implemented system, traceability matrix updated with executed test cases, data layouts updated (Allocation, AuditEntry), changes after the baseline recorded in Appendix E | 2.0 |
 
 ---
 
@@ -50,7 +53,7 @@
 
 ## 1.1 Purpose
 
-The Software Requirements Specification (SRS) defines the functional and nonfunctional requirements for Version 1.3 of the Hostel Management System. The system is a web-based application developed for the Software Engineering course at PES University to manage student information, hostel room allocation, fee payment records, complaints, and leave requests for a single hostel. The system provides separate functionality for Student and Admin users.
+The Software Requirements Specification (SRS) defines the functional and nonfunctional requirements for Version 2.0 of the Hostel Management System. The system is a web-based application developed for the Software Engineering course at PES University to manage student information, hostel room allocation, fee payment records, complaints, and leave requests for a single hostel. The system provides separate functionality for Student and Admin users.
 
 ## 1.2 Intended Audience and Reading Suggestions
 
@@ -94,14 +97,14 @@ The Hostel Management System is a new, self-contained, standalone web applicatio
 
 ## 2.4 Operating Environment
 
-The system is a web application accessed through any modern browser (Chrome, Firefox, Edge). It is built using Python 3.x with the Django web framework, and uses PostgreSQL as the backend database. It is developed and demonstrated locally (and later via Docker), with no additional client-side installation required beyond a browser.
+The system is a web application accessed through any modern browser (Chrome, Firefox, Edge). It is built using Python 3.12 with the Django 5.2 web framework, and uses PostgreSQL 16 as the backend database. It runs locally with Docker Compose (application and PostgreSQL containers). For quick local development without Docker, the application can also run on a local SQLite database; PostgreSQL is used in Docker and in CI. No client-side installation is required beyond a browser.
 
 ## 2.5 Design and Implementation Constraints
 
 * Must be built using Python (Django), per the team's chosen tech stack.
 * Single hostel/single campus scope — no multi-hostel support.
 * Two user roles only: Student and Admin. No payment gateway integration — fee payments are admin-recorded entries, not processed transactions.
-* Agile/Scrum methodology mandatory; GitHub used for backlog, issues, and pull requests, with CI running tests on every PR.
+* Agile/Scrum methodology mandatory; GitHub used for backlog, issues, and pull requests, with CI (GitHub Actions) running tests on every PR.
 
 ## 2.6 Assumptions and Dependencies
 
@@ -198,10 +201,18 @@ Allows the admin to update the status of complaints and to approve or reject pen
 
 *Figure 3.9 – Complaints & Leave Requests screen (Admin).*
 
+### 3.1.10 Screens added during implementation
+
+The following screens follow the same layout and conventions as above and were added while implementing the requirements; no separate prototype figure was drawn for them:
+
+* **My Profile (Student):** shows SRN, email, account status and registration date, and lets the student edit their name and guardian contact (REQ-5).
+* **Dues Report (Admin):** lists every student with a fee record, sorted by outstanding balance, with totals and a "Show only students with dues" filter (REQ-16).
+* **Audit Log (Admin):** lists audit entries (user, action, details, IP address, time) with a filter by action, 50 entries per page (SEC-6).
+
 ## 3.2 Software Interfaces
 
 * **Backend framework:** Django 5.2 (LTS), running on Python 3.x.
-* **Database engine:** PostgreSQL 16, chosen for its relational integrity between the Student, Room, Fee, and related entities.
+* **Database engine:** PostgreSQL 16, chosen for its relational integrity between the Student, Room, Fee, and related entities. A local SQLite file is used only for development runs without Docker.
 * **ORM:** Django ORM is used for all database access; no raw SQL is required for normal operations.
 * **Authentication:** Django's built-in authentication and session framework.
 * No external payment gateway library or SDK is used in this version of the system.
@@ -222,7 +233,7 @@ The system requires no special hardware. Users access it through a standard comp
 
 ## 4.1 Use Case Diagrams
 
-The use case diagrams below show the two actors, Student and Admin, and the twelve use cases (UC-01 to UC-12) listed in the Use Cases table at the end of this document. Both actors use UC-01 (Register / Login), since login applies to both roles; registration applies to Students only.
+The use case diagrams below show the two actors, Student and Admin, and the twelve use cases (UC-01 to UC-12) listed in Appendix D. Both actors use UC-01 (Register / Login), since login applies to both roles; registration applies to Students only.
 
 ![Student Use Case Diagram](diagrams/use_case_student.png)
 
@@ -234,7 +245,7 @@ The use case diagrams below show the two actors, Student and Admin, and the twel
 
 ## 4.2 ER Diagram
 
-The ER diagram below shows the core entities: Student, Room, Block, Fee, PaymentRecord, Complaint, and LeaveRequest. A Block contains many Rooms. A Room may be allocated to many Students, up to its capacity (REQ-7), and a Student has at most one allocated Room. Each Student has at most one Fee record, which may be set per student (REQ-11), and many PaymentRecords (REQ-12). The outstanding balance is calculated as the fee amount minus the sum of payment amounts (REQ-13) and is not stored. A Student files Complaints, each tied to a Room (REQ-17), and submits LeaveRequests (REQ-19). Admin users are stored in the same user table as Students, distinguished by the `role` attribute, and are therefore not a separate entity.
+The ER diagram below shows the core entities: Student, Room, Block, Allocation, Fee, PaymentRecord, Complaint, LeaveRequest, and AuditEntry. A Block contains many Rooms. A Room may be allocated to many Students, up to its capacity (REQ-7), and a Student has at most one allocated Room. The allocation is stored as a separate Allocation record that is one-to-one with the Student and many-to-one with the Room (see Appendix E). Each Student has at most one Fee record, which may be set per student (REQ-11), and many PaymentRecords (REQ-12). The outstanding balance is calculated as the fee amount minus the sum of payment amounts (REQ-13) and is not stored. A Student files Complaints, each tied to a Room (REQ-17), and submits LeaveRequests (REQ-19). Admin users are stored in the same user table as Students, distinguished by the `role` attribute, and are therefore not a separate entity. AuditEntry records security-relevant events and refers to the user who performed them (SEC-6).
 
 ![ER Diagram](diagrams/er_diagram.png)
 
@@ -243,9 +254,6 @@ The ER diagram below shows the core entities: Student, Room, Block, Fee, Payment
 ---
 
 # 5. System Features
-
-> **Shared vocabulary — do not rename these across sections, and do not reintroduce removed terms:**
-> `Student`, `Admin`, `Room`, `Block`, `Fee`, `PaymentRecord`, `Complaint`, `LeaveRequest`, `RBAC`.
 
 ## 5.1 Student & Access Management
 
@@ -403,7 +411,7 @@ Student submits a leave/outing request with the required date range and reason �
 
 ## 7.1 Database Requirements
 
-* The system shall use PostgreSQL as the database management system.
+* The system shall use PostgreSQL as the database management system (Docker and CI). A local SQLite database is permitted for development runs only.
 * The database shall maintain relationships between students, rooms, fees, payments, complaints, and leave requests.
 * Required fields shall not accept null or empty values where the corresponding field is marked mandatory in Appendix B.
 * The database shall maintain data consistency when complaints or leave requests are created or their statuses are updated.
@@ -454,9 +462,17 @@ Student submits a leave/outing request with the required date range and reason �
 | `created_at` | DateTime | Date and time the account was registered | Yes |
 | `srn` | String | Student's unique SRN | Yes |
 | `role` | Enum/String | Student or Admin | Yes |
-| `room_id` | UUID/String | Room the student is currently allocated to (empty if none) | No |
 
-`srn` and `guardian_contact` are mandatory only when `role` = Student. For Admin accounts they may be empty.
+`srn` and `guardian_contact` are mandatory only when `role` = Student. For Admin accounts they may be empty. The student's current room is not stored on the Student record; it is stored in the Allocation record below.
+
+### Allocation
+
+| Field | Type | Description | Mandatory |
+|---|---|---|---|
+| `allocation_id` | UUID/String | Unique identifier for the allocation | Yes |
+| `student_id` | UUID/String | Allocated student (unique: a student has at most one allocation) | Yes |
+| `room_id` | UUID/String | Room the student is allocated to | Yes |
+| `allocated_at` | DateTime | Date and time of the allocation | Yes |
 
 ### Block
 
@@ -517,47 +533,62 @@ Student submits a leave/outing request with the required date range and reason �
 | `amount`       | Decimal     | Amount recorded in this payment entry                    | Yes       |
 | `payment_date` | Date        | Date the payment was recorded                            | Yes       |
 
+### AuditEntry
+
+| Field | Type | Description | Mandatory |
+|---|---|---|---|
+| `audit_id` | Integer | Unique identifier for the audit entry | Yes |
+| `user_id` | UUID/String | User who performed the action (empty for a failed login or after the user is deleted) | No |
+| `identifier` | String | Email typed on the login form, or email of the acting user | No |
+| `action` | Enum/String | Login, failed login, logout, access denied, registration decision, room created, room allocated, room deallocated, fee set, payment recorded, complaint status changed, leave decision | Yes |
+| `details` | String | Short description of the event (never contains passwords or session tokens) | No |
+| `ip_address` | String | IP address of the request | No |
+| `timestamp` | DateTime | Date and time of the event | Yes |
+
 ---
 
 ## Appendix C: Requirement Traceability Matrix
 
+Status: **N** = not implemented, **P** = partially implemented or not yet verified, **A** = implemented and verified by the listed test cases. Test cases are defined in STP section 16; the automated tests run in CI on every pull request.
+
 | Req ID | Requirement short | Section ref / Design spec | Module | Test case(s) | Status (N/P/A) | Comments |
 |---|---|---|---|---|---|---|
-| REQ-1 | Register with unique email and SRN | 5.1 / SAD 4.3.1 | Accounts | TC-ACC-03 | N | |
-| REQ-2 | New accounts stay Pending | 5.1 / SAD 4.3.1 | Accounts | TC-ACC-04 | N | |
-| REQ-3 | Admin approves or rejects registration | 5.1 / SAD 4.3.1 | Accounts | TC-ACC-04 | N | |
-| REQ-4 | Role-based access | 5.1 / SAD 3.9 | Accounts | TC-SEC-01 | N | |
-| REQ-5 | Student views and edits own profile | 5.1 / SAD 3.4 | Accounts | Planned | N | |
-| REQ-6 | Define blocks and rooms with capacity | 5.2 / SAD 4.3.2 | Rooms | Planned | N | |
-| REQ-7 | Prevent allocation beyond capacity | 5.2 / SAD 4.2.2 | Rooms | TC-ROOM-02 | N | |
-| REQ-8 | Allocate room to a Verified student | 5.2 / SAD 4.2.2, 4.3.2 | Rooms | TC-ROOM-01, TC-ROOM-03 | N | |
-| REQ-9 | Deallocate a student from a room | 5.2 / SAD 4.3.2 | Rooms | TC-ROOM-04 | N | |
-| REQ-10 | Automatic occupancy and status update | 5.2 / SAD 4.2.2 | Rooms | TC-ROOM-01, TC-ROOM-04 | N | |
-| REQ-11 | Admin defines fee amount for a student | 5.3 / SAD 4.3.3 | Fees | TC-FEE-01 | N | |
-| REQ-12 | Admin records a payment | 5.3 / SAD 4.2.3, 4.3.3 | Fees | TC-FEE-01 | N | |
-| REQ-13 | Outstanding = fee minus payments | 5.3 / SAD 4.2.3 | Fees | TC-FEE-01 | N | |
-| REQ-14 | Payment cannot exceed outstanding | 5.3 / SAD 4.2.3 | Fees | TC-FEE-02 | N | |
-| REQ-15 | Student views own fee details | 5.3 / SAD 4.3.3 | Fees | TC-FEE-03 | N | |
-| REQ-16 | Admin dues report | 5.3 / SAD 3.4 | Fees | Planned | N | |
-| REQ-17 | Student files a complaint | 5.4 / SAD 4.3.4 | Complaints & Leave | TC-REQ-01 | N | |
-| REQ-18 | Admin updates complaint status | 5.4 / SAD 4.3.4 | Complaints & Leave | TC-REQ-02 | N | |
-| REQ-19 | Student submits a leave request | 5.4 / SAD 4.2.4 | Complaints & Leave | TC-REQ-03 | N | |
-| REQ-20 | Admin approves or rejects leave | 5.4 / SAD 4.2.4 | Complaints & Leave | TC-REQ-04 | N | |
-| REQ-21 | Login | 5.1 / SAD 4.2.1 | Accounts | TC-ACC-01, TC-ACC-02, TC-ACC-04 | N | |
-| SEC-1 | Passwords stored hashed | 6.3 / SAD 3.9 | Accounts | Planned (STP 5.1) | N | |
-| SEC-2 | Role-based access for admin pages | 6.3 / SAD 3.9 | Accounts | TC-SEC-01 | N | |
-| SEC-3 | Input validation and sanitising | 6.3 / SAD 3.9 | All modules | Planned (STP 5.1) | N | |
-| SEC-4 | Session expiry and rejection | 6.3 / SAD 4.2.1 | Accounts | TC-SEC-02 | N | |
-| SEC-5 | CSRF protection | 6.3 / SAD 3.9 | Web UI | Planned (STP 5.1) | N | |
-| SEC-6 | Audit log | 6.3 / SAD 3.9 | Logging & Audit | Planned (STP 5.1) | N | |
-| NFR-1 | Response time | 6.1 / SAD 3.6 | All modules | TC-PERF-01 | N | |
-| NFR-2 | Complaint in 4 screens | 6.4 / SAD 4.5 | Web UI | TC-USE-01 | N | |
-| NFR-3 | Atomic updates | 6.4 / SAD 4.2.2 | Rooms, Fees, Complaints & Leave | Planned | N | |
-| NFR-4 | Modular code, 70% coverage | 6.4 / SAD 4.1 | All modules | Planned | N | |
-| NFR-5 | Chrome and Firefox compatibility | 6.4 / SAD 3.6 | Web UI | Planned | N | |
+| REQ-1 | Register with unique email and SRN | 5.1 / SAD 4.3.1 | Accounts | TC-ACC-03 | A | Sprint 1 |
+| REQ-2 | New accounts stay Pending | 5.1 / SAD 4.3.1 | Accounts | TC-ACC-04 | A | Sprint 1 |
+| REQ-3 | Admin approves or rejects registration | 5.1 / SAD 4.3.1 | Accounts | TC-ACC-04 | A | Sprint 1 |
+| REQ-4 | Role-based access | 5.1 / SAD 3.9 | Accounts | TC-SEC-01 | A | Sprint 1 |
+| REQ-5 | Student views and edits own profile | 5.1 / SAD 4.3.1 | Accounts | TC-ACC-05 | A | Sprint 2 |
+| REQ-6 | Define blocks and rooms with capacity | 5.2 / SAD 4.3.2 | Rooms | TC-ROOM-05 | A | Sprint 1 |
+| REQ-7 | Prevent allocation beyond capacity | 5.2 / SAD 4.2.2 | Rooms | TC-ROOM-02 | A | Sprint 1 |
+| REQ-8 | Allocate room to a Verified student | 5.2 / SAD 4.2.2, 4.3.2 | Rooms | TC-ROOM-01, TC-ROOM-03 | A | Sprint 1 |
+| REQ-9 | Deallocate a student from a room | 5.2 / SAD 4.3.2 | Rooms | TC-ROOM-04 | A | Sprint 2 |
+| REQ-10 | Automatic occupancy and status update | 5.2 / SAD 4.2.2 | Rooms | TC-ROOM-01, TC-ROOM-04 | A | Sprint 1 and 2 |
+| REQ-11 | Admin defines fee amount for a student | 5.3 / SAD 4.3.3 | Fees | TC-FEE-01 | A | Sprint 1 |
+| REQ-12 | Admin records a payment | 5.3 / SAD 4.2.3, 4.3.3 | Fees | TC-FEE-01 | A | Sprint 1 |
+| REQ-13 | Outstanding = fee minus payments | 5.3 / SAD 4.2.3 | Fees | TC-FEE-01 | A | Sprint 1 |
+| REQ-14 | Payment cannot exceed outstanding | 5.3 / SAD 4.2.3 | Fees | TC-FEE-02 | A | Sprint 1 |
+| REQ-15 | Student views own fee details | 5.3 / SAD 4.3.3 | Fees | TC-FEE-03 | A | Sprint 2 |
+| REQ-16 | Admin dues report | 5.3 / SAD 4.3.3 | Fees | TC-FEE-04 | A | Sprint 2 |
+| REQ-17 | Student files a complaint | 5.4 / SAD 4.3.4 | Complaints & Leave | TC-REQ-01 | A | Sprint 1 |
+| REQ-18 | Admin updates complaint status | 5.4 / SAD 4.3.4 | Complaints & Leave | TC-REQ-02 | A | Sprint 2 |
+| REQ-19 | Student submits a leave request | 5.4 / SAD 4.2.4 | Complaints & Leave | TC-REQ-03 | A | Sprint 1 |
+| REQ-20 | Admin approves or rejects leave | 5.4 / SAD 4.2.4 | Complaints & Leave | TC-REQ-04 | A | Sprint 2 |
+| REQ-21 | Login | 5.1 / SAD 4.2.1 | Accounts | TC-ACC-01, TC-ACC-02, TC-ACC-04 | A | Sprint 1 |
+| SEC-1 | Passwords stored hashed | 6.3 / SAD 3.9 | Accounts | TC-SEC-06 | A | Sprint 1 |
+| SEC-2 | Role-based access for admin pages | 6.3 / SAD 3.9 | Accounts | TC-SEC-01 | A | Authorization matrix covers every page (Sprint 2) |
+| SEC-3 | Input validation and sanitising | 6.3 / SAD 3.9 | All modules | TC-SEC-03 | A | Sprint 2 |
+| SEC-4 | Session expiry and rejection | 6.3 / SAD 4.2.1 | Security | TC-SEC-02 | A | 30-minute idle timeout (Sprint 2) |
+| SEC-5 | CSRF protection | 6.3 / SAD 3.9 | Web UI | TC-SEC-05 | A | Sprint 1 |
+| SEC-6 | Audit log | 6.3 / SAD 3.9, 4.3.5 | Audit | TC-SEC-04 | A | Sprint 2 |
+| NFR-1 | Response time | 6.1 / SAD 3.6 | All modules | TC-PERF-01 | A | Locust run, see docs/testing/performance_results.md |
+| NFR-2 | Complaint in 4 screens | 6.4 / SAD 4.5 | Web UI | TC-USE-01 | A | See docs/testing/usability_nfr2.md |
+| NFR-3 | Atomic updates | 6.4 / SAD 4.2.2 | Rooms, Fees, Complaints & Leave | TC-REL-01 | A | Sprint 2 |
+| NFR-4 | Modular code, 70% coverage | 6.4 / SAD 4.1 | All modules | TC-COV-01 | A | 94% to 100% per module |
+| NFR-5 | Chrome and Firefox compatibility | 6.4 / SAD 3.6 | Web UI | TC-BRW-01 | A | See docs/testing/browser_compatibility.md |
+
 ---
 
-## Use Cases (reference list for the Analysis Models section)
+## Appendix D: Use Cases
 
 | Use Case ID | Use Case                    | Primary Actor | Precondition                                      | Outcome                                     |
 | ----------- | --------------------------- | ------------- | ------------------------------------------------- | ------------------------------------------- |
@@ -575,3 +606,16 @@ Student submits a leave/outing request with the required date range and reason �
 | UC-12       | Approve / Reject Leave      | Admin         | Admin authenticated, pending leave request exists | Leave request status updated                |
 
 ---
+
+## Appendix E: Changes After the Phase-1 Baseline
+
+All requirements in this document were implemented without change to their meaning. The following points changed between the Phase-1 baseline (v1.3) and the final system. They are design and environment decisions; the full list with reasons is in SAD section 4.7.
+
+| # | Baseline (v1.3) | Final system | Reason |
+|---|---|---|---|
+| 1 | The student's room stored as `room_id` on the Student record | A separate Allocation record, one-to-one with the Student | Keeps the Accounts module independent of the Rooms module; same rule: a student has at most one room |
+| 2 | PostgreSQL only | PostgreSQL 16 in Docker and CI; a local SQLite file for development runs without Docker | Lets every member run and test the project without installing PostgreSQL |
+| 3 | CI with Jenkins | CI with GitHub Actions (tests on PostgreSQL, migration check, per-module coverage) | Runs on every pull request with no separate CI server to host |
+| 4 | No screen for audit entries | Admin Audit Log page with a filter by action | Lets the admin review SEC-6 entries without database access |
+| 5 | SEC-4 did not fix a timeout | Sessions expire after 30 minutes without a request, and when the browser is closed | Concrete value needed to implement and test SEC-4 |
+| 6 | No rule on lowering a fee or on future payment dates | A fee cannot be set below the amount already paid, and a payment date cannot be in the future | Keeps the outstanding balance (REQ-13, REQ-14) valid in every case |

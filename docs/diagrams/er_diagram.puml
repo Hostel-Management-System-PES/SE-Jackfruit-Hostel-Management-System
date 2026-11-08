@@ -5,42 +5,47 @@ skinparam linetype ortho
 entity Block {
   * block_id : UUID <<PK>>
   --
-  * block_name : String <<unique>>
+  * name : String <<unique>>
 }
 entity Room {
   * room_id : UUID <<PK>>
   --
   * block_id : UUID <<FK>>
-  * room_number : String
-  * room_type : String
-  * capacity : Integer
+  * room_number : String <<unique per block>>
+  * room_type : Single / Double / Triple
+  * capacity : Integer (min 1)
   * room_status : Vacant / Occupied
 }
 entity Student {
   * student_id : UUID <<PK>>
   --
-  room_id : UUID <<FK>> (null until allocated)
-  * srn : String <<unique>>
+  srn : String <<unique>> (students only)
   * email : String <<unique>>
   * password_hash : String
   * role : Student / Admin
   * name : String
-  * account_status : Pending / Active / Rejected
-  contact_no : String
-  guardian_info : String
+  * registration_status : Pending / Verified / Rejected
+  guardian_contact : String
+  * created_at : DateTime
+}
+entity Allocation {
+  * allocation_id : UUID <<PK>>
+  --
+  * student_id : UUID <<FK, unique>>
+  * room_id : UUID <<FK>>
+  * allocated_at : DateTime
 }
 entity Fee {
   * fee_id : UUID <<PK>>
   --
   * student_id : UUID <<FK, unique>>
-  room_type : String (if set by room type)
-  * fee_amount : Decimal(10,2)
+  * amount : Decimal(10,2)
 }
 entity PaymentRecord {
   * payment_id : UUID <<PK>>
   --
   * student_id : UUID <<FK>>
-  * payment_amount : Decimal(10,2)
+  * amount : Decimal(10,2)
   * payment_date : Date
 }
 entity Complaint {
@@ -62,21 +67,37 @@ entity LeaveRequest {
   * leave_status : Pending / Approved / Rejected
   * created_at : DateTime
 }
+entity AuditEntry {
+  * audit_id : Integer <<PK>>
+  --
+  user_id : UUID <<FK>> (null for failed login)
+  identifier : String
+  * action : String
+  details : String
+  ip_address : String
+  * timestamp : DateTime
+}
 
 Block ||--o{ Room : contains
-Room |o--o{ Student : "is allocated to"
+Room ||--o{ Allocation : "has"
+Student ||--o| Allocation : "is allocated by"
 Student ||--o| Fee : "owes"
 Student ||--o{ PaymentRecord : "pays"
 Student ||--o{ Complaint : files
 Room ||--o{ Complaint : "is subject of"
 Student ||--o{ LeaveRequest : submits
+Student |o--o{ AuditEntry : "performs"
 
 note bottom of Fee
   Outstanding balance is derived, not stored:
-  fee_amount - SUM(payment_amount)
+  amount - SUM(PaymentRecord.amount)
 end note
 note bottom of Student
   Admin accounts are Student-table users
   with role = Admin (no separate entity)
+end note
+note bottom of Allocation
+  Number of allocations of a room
+  never exceeds its capacity (REQ-7)
 end note
 @enduml
