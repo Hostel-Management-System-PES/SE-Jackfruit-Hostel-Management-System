@@ -10,20 +10,20 @@ UI -> ROOM: allocate(student_id, room_id)
 ROOM -> ACC: is_verified(student_id)
 ACC --> ROOM: registration status
 alt student not Verified or already allocated
-  ROOM --> UI: error 409
-  UI --> Admin: show error message
+  ROOM --> UI: AllocationError
+  UI --> Admin: same page, red banner, nothing saved
 else student eligible
-  ROOM -> DB: read room capacity and occupancy
+  ROOM -> DB: lock room row, count allocations (one transaction)
   DB --> ROOM: capacity, occupied
   alt room full
-    ROOM --> UI: error 409
-    UI --> Admin: show "room is full"
+    ROOM --> UI: AllocationError
+    UI --> Admin: red banner "Room ... is full"
   else room available
-    ROOM -> DB: save allocation, update occupancy and status (one transaction)
+    ROOM -> DB: save allocation, update room status (same transaction)
     DB --> ROOM: ok
-    ROOM -> LOG: log allocation
+    DB -> LOG: post_save signal: log allocation
     ROOM --> UI: success
-    UI --> Admin: confirmation
+    UI --> Admin: redirect, green banner
   end
 end
 @enduml
