@@ -18,6 +18,7 @@ COPY rooms ./rooms
 COPY fees ./fees
 COPY complaints ./complaints
 COPY audit ./audit
+COPY security ./security
 COPY templates ./templates
 COPY static ./static
 
