@@ -7,7 +7,7 @@
   {% if complaints %}
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Student</th><th>Room</th><th>Issue</th><th>Filed</th><th>Status</th></tr></thead>
+        <thead><tr><th>Student</th><th>Room</th><th>Issue</th><th>Filed</th><th>Status</th><th>Update</th></tr></thead>
         <tbody>
           {% for complaint in complaints %}
             <tr>
@@ -16,6 +16,19 @@
               <td>{{ complaint.description|linebreaksbr }}</td>
               <td>{{ complaint.created_at|date:"d M Y" }}</td>
               <td><span class="badge badge-{{ complaint.status|lower }}">{{ complaint.status }}</span></td>
+              <td>
+                <div class="actions">
+                  {% for status in statuses %}
+                    {% if status != complaint.status %}
+                      <form method="post" action="{% url 'complaints:update_complaint_status' complaint.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="{{ status }}">
+                        <button type="submit" class="btn btn-small btn-outline">{{ status }}</button>
+                      </form>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </td>
             </tr>
           {% endfor %}
         </tbody>
@@ -29,7 +42,7 @@
   {% if leaves %}
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Student</th><th>Dates</th><th>Reason</th><th>Status</th></tr></thead>
+        <thead><tr><th>Student</th><th>Dates</th><th>Reason</th><th>Status</th><th>Decision</th></tr></thead>
         <tbody>
           {% for leave in leaves %}
             <tr>
@@ -37,6 +50,24 @@
               <td>{{ leave.start_date|date:"d M Y" }} to {{ leave.end_date|date:"d M Y" }}</td>
               <td>{{ leave.reason }}</td>
               <td><span class="badge badge-{{ leave.status|lower }}">{{ leave.status }}</span></td>
+              <td>
+                {% if leave.status == "Pending" %}
+                  <div class="actions">
+                    <form method="post" action="{% url 'complaints:decide_leave' leave.id %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="decision" value="Approved">
+                      <button type="submit" class="btn btn-small">Approve</button>
+                    </form>
+                    <form method="post" action="{% url 'complaints:decide_leave' leave.id %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="decision" value="Rejected">
+                      <button type="submit" class="btn btn-small btn-red">Reject</button>
+                    </form>
+                  </div>
+                {% else %}
+                  <span class="muted">Decided {{ leave.decided_at|date:"d M Y" }}</span>
+                {% endif %}
+              </td>
             </tr>
           {% endfor %}
         </tbody>
