@@ -2,7 +2,7 @@
 
 A web application for managing student details, hostel room allocation, fee records, complaints and leave requests for a single hostel. Built for the Software Engineering mini-project (UE24CS341A, PES University) using Agile/Scrum.
 
-Documents: [SRS](docs/SRS.md) · [SAD](docs/SAD.md) · [Test Plan](docs/STP.md)
+Documents: [SRS](docs/SRS.pdf) · [SAD](docs/SAD.pdf) · [Test Plan](docs/STP.pdf)
 
 ## Team and modules
 
